@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 
 void main() => runApp(App());
 
 class App extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,7 +29,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +51,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _saveCurrentRestaurant() {
-
+  _saveCurrentRestaurant() async {
+    try {
+      Position position = await Geolocator()
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      log(position.latitude.toString());
+      log(position.longitude.toString());
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        // TODO: Handle error
+        print(e);
+      } else {
+        // TODO: Handle error
+        print(e);
+      }
+    }
   }
 }
