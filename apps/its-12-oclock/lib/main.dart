@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:its_12_oclock/placefinder.dart';
 
 void main() => runApp(App());
 
@@ -29,6 +30,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  Position position;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,30 +44,67 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
-              onPressed: _saveCurrentRestaurant,
+              onPressed: () {
+                _findPlaces();
+                setState(() {});
+              },
               color: Theme.of(context).primaryColor,
               textColor: Colors.white,
               child: Text("Save restaurant"),
             ),
+            _placesWidget(),
           ],
         ),
       ),
     );
   }
 
-  _saveCurrentRestaurant() async {
+  Widget _placesWidget() {
+    return FutureBuilder<List<Place>>(
+        future: _findPlaces(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                Place place = snapshot.data[index];
+                // await Geolocator().distanceBetween(position.latitude, position.longitude, place.location.lat, place.location.lng);
+                return Column(children: <Widget>[
+                  Card(
+                    child: ListTile(
+                      leading: FlutterLogo(size: 56.0),
+                      title: Text(place.name),
+                      subtitle: Text("Distance: ${place.distance}m, Rating: ${place.rating}"),
+                      trailing: Icon(Icons.more_vert),
+                    ),
+                  )
+                ]);
+              },
+            );
+          } else if (snapshot.hasError) {
+            log(snapshot.error);
+            return Text("${snapshot.error}");
+          }
+          return CircularProgressIndicator();
+        });
+  }
+
+  Future<List<Place>> _findPlaces() async {
     try {
-      Position position = await Geolocator()
+      position = await Geolocator()
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      log(position.latitude.toString());
-      log(position.longitude.toString());
+      return PlaceFinder.find(
+          Location(lat: position.latitude, lng: position.longitude));
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         // TODO: Handle error
         print(e);
+        throw e;
       } else {
         // TODO: Handle error
         print(e);
+        throw e;
       }
     }
   }
