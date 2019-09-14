@@ -6,8 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"mime"
 	"net/http"
 	"os"
+	"strings"
 
 	"googlemaps.github.io/maps"
 )
@@ -17,8 +19,8 @@ const (
 )
 
 type place struct {
-	PlaceID string `json:"place_id"`
 	Name    string `json:"name"`
+	PlaceID string `json:"place_id"`
 }
 
 type app struct {
@@ -50,6 +52,10 @@ func (a *app) nearbySearch(ctx context.Context, location *maps.LatLng) ([]*place
 	return res, nil
 }
 
+type response struct {
+	Results []*place `json:"results"`
+}
+
 func newApp(getenv func(string) string) (*app, error) {
 	mapsAPIKey := getenv(envMapsAPIKey)
 	if mapsAPIKey == "" {
@@ -58,16 +64,36 @@ func newApp(getenv func(string) string) (*app, error) {
 	return &app{MapsAPIKey: mapsAPIKey}, nil
 }
 
+func hasContentType(r *http.Request, mimetype string) bool {
+	ct := r.Header.Get("Content-type")
+	if ct == "" {
+		return mimetype == "application/octet-stream"
+	}
+	for _, v := range strings.Split(ct, ",") {
+		t, _, err := mime.ParseMediaType(v)
+		if err != nil {
+			log.Printf("parse media type: %s", err)
+			break
+		}
+		if t == mimetype {
+			return true
+		}
+	}
+	return false
+}
+
 func parseRequest(r *http.Request) (*maps.LatLng, error) {
 	// NOTE: The returned errors are returned to the caller. Keep them generic!
 	if r.Method != http.MethodPost {
+		log.Printf("invalid method %s", r.Method)
 		return nil, errors.New("invalid method")
 	}
-	if r.Header.Get("Content-Type") != "application/json" {
+	if hasContentType(r, "application/json") != true {
 		return nil, errors.New("invalid content type")
 	}
 	var location maps.LatLng
 	if err := json.NewDecoder(r.Body).Decode(&location); err != nil {
+		log.Printf("invalid body: %s", err)
 		return nil, errors.New("invalid body")
 	}
 	return &location, nil
@@ -95,7 +121,7 @@ func PlaceFinder(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{"error": "internal server error"}`))
 		return
 	}
-	resp, err := json.Marshal(places)
+	resp, err := json.Marshal(response{places})
 	if err != nil {
 		log.Printf("failed to marshal: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
