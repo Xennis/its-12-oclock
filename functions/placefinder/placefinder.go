@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math"
 	"mime"
 	"net/http"
 	"os"
@@ -15,16 +16,38 @@ import (
 )
 
 const (
-	envMapsAPIKey = "MAPS_API_KEY"
+	envMapsAPIKey      = "MAPS_API_KEY"
+	earthRadiusInMeter = 6378100.0
 )
 
 type place struct {
-	Name    string `json:"name"`
-	PlaceID string `json:"place_id"`
+	Distance int         `json:"distance"`
+	Location maps.LatLng `json:"location"`
+	Name     string      `json:"name"`
+	PlaceID  string      `json:"place_id"`
+	Rating   float32     `json:"rating"`
 }
 
 type app struct {
 	MapsAPIKey string
+}
+
+func distance(a *maps.LatLng, b *maps.LatLng) int {
+	// haversin(θ) function
+	hsin := func(theta float64) float64 {
+		return math.Pow(math.Sin(theta/2), 2)
+	}
+	degress := func(v float64) float64 {
+		return v * math.Pi / 180
+	}
+
+	lat1 := degress(a.Lat)
+	lng1 := degress(a.Lng)
+	lat2 := degress(b.Lat)
+	lng2 := degress(b.Lng)
+	h := hsin(lat2-lat1) + math.Cos(lat1)*math.Cos(lat2)*hsin(lng2-lng1)
+	d := 2 * earthRadiusInMeter * math.Asin(math.Sqrt(h))
+	return int(math.RoundToEven(d))
 }
 
 func (a *app) nearbySearch(ctx context.Context, location *maps.LatLng) ([]*place, error) {
@@ -45,8 +68,11 @@ func (a *app) nearbySearch(ctx context.Context, location *maps.LatLng) ([]*place
 	for i := range resp.Results {
 		p := &resp.Results[i]
 		res[i] = &place{
-			PlaceID: p.PlaceID,
-			Name:    p.Name,
+			Distance: distance(location, &p.Geometry.Location),
+			Location: p.Geometry.Location,
+			Name:     p.Name,
+			PlaceID:  p.PlaceID,
+			Rating:   p.Rating,
 		}
 	}
 	return res, nil
