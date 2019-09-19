@@ -1,4 +1,4 @@
-package com.example.its_12_oclock
+package org.xennis.apps.its_12_oclock
 
 import android.os.Bundle
 
