@@ -7,10 +7,8 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"mime"
 	"net/http"
 	"os"
-	"strings"
 
 	"googlemaps.github.io/maps"
 )
@@ -90,32 +88,11 @@ func newApp(getenv func(string) string) (*app, error) {
 	return &app{MapsAPIKey: mapsAPIKey}, nil
 }
 
-func hasContentType(r *http.Request, mimetype string) bool {
-	ct := r.Header.Get("Content-type")
-	if ct == "" {
-		return mimetype == "application/octet-stream"
-	}
-	for _, v := range strings.Split(ct, ",") {
-		t, _, err := mime.ParseMediaType(v)
-		if err != nil {
-			log.Printf("parse media type: %s", err)
-			break
-		}
-		if t == mimetype {
-			return true
-		}
-	}
-	return false
-}
-
 func parseRequest(r *http.Request) (*maps.LatLng, error) {
 	// NOTE: The returned errors are returned to the caller. Keep them generic!
 	if r.Method != http.MethodPost {
 		log.Printf("invalid method %s", r.Method)
 		return nil, errors.New("invalid method")
-	}
-	if hasContentType(r, "application/json") != true {
-		return nil, errors.New("invalid content type")
 	}
 	var location maps.LatLng
 	if err := json.NewDecoder(r.Body).Decode(&location); err != nil {
@@ -135,24 +112,15 @@ func PlaceFinder(w http.ResponseWriter, r *http.Request) {
 	}
 	app, err := newApp(os.Getenv)
 	if err != nil {
-		log.Printf("failed to create app: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"error": "internal server error"}`))
-		return
+		log.Fatalf("failed to create app: %s", err)
 	}
 	places, err := app.nearbySearch(r.Context(), location)
 	if err != nil {
-		log.Printf("failed to find places: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"error": "internal server error"}`))
-		return
+		log.Fatalf("failed to find places: %s", err)
 	}
 	resp, err := json.Marshal(response{places})
 	if err != nil {
-		log.Printf("failed to marshal: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"error": "internal server error"}`))
-		return
+		log.Fatalf("failed to marshal: %s", err)
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)

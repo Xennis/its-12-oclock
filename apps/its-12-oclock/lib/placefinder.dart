@@ -7,7 +7,6 @@ class PlaceFinder {
   static Future<List<Place>> find(Location location) async {
     final response = await http.post(
         'https://europe-west1-hacker-playground-101.cloudfunctions.net/PlaceFinder',
-        headers: {'Content-Type': 'application/json'},
         body: json.encode(location.toJson()));
     if (response.statusCode == 200) {
       return _PlaceFinderReponse.fromJson(json.decode(response.body)).results;
