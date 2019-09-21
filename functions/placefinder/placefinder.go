@@ -30,7 +30,7 @@ type app struct {
 	MapsAPIKey string
 }
 
-func distance(a *maps.LatLng, b *maps.LatLng) int {
+func distance(a maps.LatLng, b maps.LatLng) int {
 	// haversin(θ) function
 	hsin := func(theta float64) float64 {
 		return math.Pow(math.Sin(theta/2), 2)
@@ -66,7 +66,7 @@ func (a *app) nearbySearch(ctx context.Context, location *maps.LatLng) ([]*place
 	for i := range resp.Results {
 		p := &resp.Results[i]
 		res[i] = &place{
-			Distance: distance(location, &p.Geometry.Location),
+			Distance: distance(*location, p.Geometry.Location),
 			Location: p.Geometry.Location,
 			Name:     p.Name,
 			PlaceID:  p.PlaceID,
