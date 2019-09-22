@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -85,10 +86,14 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<Place>> _findPlaces() async {
     try {
+      FirebaseUser user = await FirebaseAuth.instance.currentUser();
+      IdTokenResult tokenResult = await user.getIdToken(refresh: true);
+
       position = await Geolocator()
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       return PlaceFinder.find(
-          Location(lat: position.latitude, lng: position.longitude));
+          Location(lat: position.latitude, lng: position.longitude),
+          tokenResult.token);
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         // TODO: Handle error
