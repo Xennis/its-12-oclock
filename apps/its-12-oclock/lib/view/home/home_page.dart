@@ -66,7 +66,8 @@ class _HomePageState extends State<HomePage> {
                 return Column(children: <Widget>[
                   Card(
                     child: ListTile(
-                      leading: FlutterLogo(size: 56.0, colors: Theme.of(context).primaryColor),
+                      leading: FlutterLogo(
+                          size: 56.0, colors: Theme.of(context).primaryColor),
                       title: Text(place.name),
                       subtitle: Text(
                           "Distance: ${place.distance}m, Rating: ${place.rating}"),
