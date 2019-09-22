@@ -5,7 +5,7 @@
 ```sh
 curl "https://europe-west1-${GCP_PROJECT}.cloudfunctions.net/PlaceFinder" \
     --request POST \
-    --header 'Content-Type: application/json' \
+    --header 'Authorization: Bearer <token>' \
     --data '{"lat":53.5599,"lng":9.9638}'
 ```
 

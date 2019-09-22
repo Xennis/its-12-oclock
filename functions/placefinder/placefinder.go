@@ -104,24 +104,27 @@ func parseRequest(r *http.Request) (*maps.LatLng, error) {
 
 // PlaceFinder finds restaurant places.
 func PlaceFinder(w http.ResponseWriter, r *http.Request) {
-	location, err := parseRequest(r)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(fmt.Sprintf(`{"error": "%s"}`, err)))
-		return
-	}
-	app, err := newApp(os.Getenv)
-	if err != nil {
-		log.Fatalf("failed to create app: %s", err)
-	}
-	places, err := app.nearbySearch(r.Context(), location)
-	if err != nil {
-		log.Fatalf("failed to find places: %s", err)
-	}
-	resp, err := json.Marshal(response{places})
-	if err != nil {
-		log.Fatalf("failed to marshal: %s", err)
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
+	authorize(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		location, err := parseRequest(r)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(fmt.Sprintf(`{"error": "%s"}`, err)))
+			return
+		}
+		app, err := newApp(os.Getenv)
+		if err != nil {
+			log.Fatalf("failed to create app: %s", err)
+		}
+		places, err := app.nearbySearch(ctx, location)
+		if err != nil {
+			log.Fatalf("failed to find places: %s", err)
+		}
+		resp, err := json.Marshal(response{places})
+		if err != nil {
+			log.Fatalf("failed to marshal: %s", err)
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(resp)
+	}).ServeHTTP(w, r)
 }
