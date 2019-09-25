@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:its_12_oclock/view/home/home_page.dart';
-
-import 'sign_in.dart';
+import 'package:its_12_oclock/sign_in.dart';
+import 'package:its_12_oclock/main.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -36,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
         signInWithGoogle().whenComplete(() {
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
             builder: (context) {
-              return HomePage(title: 'It\'s 12 o\'clock');
+              return HomeWidget();
             },
           ), ModalRoute.withName('/home'));
         });

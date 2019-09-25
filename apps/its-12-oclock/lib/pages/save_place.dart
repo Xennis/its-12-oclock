@@ -4,59 +4,33 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:its_12_oclock/view/login/login_page.dart';
-import 'package:its_12_oclock/view/login/sign_in.dart';
+import 'package:its_12_oclock/placefinder.dart';
 
-import 'placefinder.dart';
-
-class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+class SavePlacePage extends StatefulWidget {
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _SavePlacePageState createState() => _SavePlacePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _SavePlacePageState extends State<SavePlacePage> {
   Position position;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 50),
-            Text(
-              "Hey $name",
-              style: TextStyle(fontSize: 25),
-            ),
-            SizedBox(height: 20),
-            RaisedButton(
-              onPressed: () {
-                signOutGoogle();
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) {
-                  return LoginPage();
-                }), ModalRoute.withName('/'));
-              },
-              color: Theme.of(context).primaryColor,
-              textColor: Colors.white,
-              child: Text("Sign out"),
-            ),
-            RaisedButton(
+            SizedBox(height: 15),
+            IconButton(
+              iconSize: 40,
+              icon: Icon(Icons.refresh),
               onPressed: () {
                 _findPlaces();
                 setState(() {});
               },
               color: Theme.of(context).primaryColor,
-              textColor: Colors.white,
-              child: Text("Save restaurant"),
             ),
             _placesWidget(),
           ],
