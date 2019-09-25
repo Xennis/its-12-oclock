@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class PlaceFinder {
   static Future<List<Place>> find(Location location, String token) async {
     final response = await http.post(
-        'https://europe-west1-its-12-oclock.cloudfunctions.net/PlaceFinder',
+        'https://europe-west1-its-12-oclock.cloudfunctions.net/PlaceFinderMock',
         headers: {'Authorization': "Bearer $token"},
         body: json.encode(location.toJson()));
     if (response.statusCode == 200) {
