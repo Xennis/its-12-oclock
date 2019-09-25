@@ -34,13 +34,11 @@ class _LoginPageState extends State<LoginPage> {
       splashColor: Colors.grey,
       onPressed: () {
         signInWithGoogle().whenComplete(() {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return HomePage(title: 'It\'s 12 o\'clock');
-              },
-            ),
-          );
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+            builder: (context) {
+              return HomePage(title: 'It\'s 12 o\'clock');
+            },
+          ), ModalRoute.withName('/home'));
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
@@ -52,7 +50,9 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image(image: AssetImage("assets/images/google_logo.png"), height: 35.0),
+            Image(
+                image: AssetImage("assets/images/google_logo.png"),
+                height: 35.0),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:its_12_oclock/view/login/login_page.dart';
 import 'package:its_12_oclock/view/login/sign_in.dart';
 
 import 'placefinder.dart';
@@ -36,6 +37,18 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(fontSize: 25),
             ),
             SizedBox(height: 20),
+            RaisedButton(
+              onPressed: () {
+                signOutGoogle();
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) {
+                  return LoginPage();
+                }), ModalRoute.withName('/'));
+              },
+              color: Theme.of(context).primaryColor,
+              textColor: Colors.white,
+              child: Text("Sign out"),
+            ),
             RaisedButton(
               onPressed: () {
                 _findPlaces();
