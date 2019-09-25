@@ -5,3 +5,9 @@ deploy:
 		--runtime go111 \
 		--trigger-http \
 		--region $(GCP_REGION)
+
+deployMock:
+	gcloud functions deploy PlaceFinderMock \
+		--runtime go111 \
+		--trigger-http \
+		--region $(GCP_REGION)
