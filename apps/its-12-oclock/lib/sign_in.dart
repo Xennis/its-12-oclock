@@ -16,15 +16,15 @@ Future<bool> signInWithGoogle() async {
     idToken: googleSignInAuthentication.idToken,
   );
 
-  final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+  fbUser = (await _auth.signInWithCredential(credential)).user;
 
-  assert(user.displayName != null);
+  assert(fbUser.displayName != null);
 
-  assert(!user.isAnonymous);
-  assert(await user.getIdToken() != null);
+  assert(!fbUser.isAnonymous);
+  assert(await fbUser.getIdToken() != null);
 
   final FirebaseUser currentUser = await _auth.currentUser();
-  assert(user.uid == currentUser.uid);
+  assert(fbUser.uid == currentUser.uid);
 
   return true;
 }
