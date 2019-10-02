@@ -1,1 +1,5 @@
+# Android
 google-services.json filter=git-crypt diff=git-crypt
+# Terraform
+.credentials.json filter=git-crypt diff=git-crypt
+*.tf filter=git-crypt diff=git-crypt
