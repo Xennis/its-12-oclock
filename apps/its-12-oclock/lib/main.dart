@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:its_12_oclock/pages/home.dart';
+import 'package:its_12_oclock/pages/login.dart';
 import 'package:its_12_oclock/pages/save_place.dart';
 import 'package:its_12_oclock/pages/settings.dart';
+import 'package:its_12_oclock/sign_in.dart';
 
 void main() => runApp(App());
 
@@ -13,7 +16,20 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: HomeWidget(),
+      home: _firstPage(),
+    );
+  }
+
+  Widget _firstPage() {
+    return FutureBuilder<FirebaseUser>(
+      future: FirebaseAuth.instance.currentUser(),
+      builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+          if (snapshot.hasData) {
+            fbUser = snapshot.data;
+            return HomeWidget();
+          }
+          return LoginPage();
+      },
     );
   }
 }

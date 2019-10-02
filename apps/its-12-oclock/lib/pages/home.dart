@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             SizedBox(height: 15),
             Text(
-              "Hey $name",
+              "Hey ${fbUser.displayName.split(" ")[0]}",
               style: TextStyle(fontSize: 25),
             ),
           ],
