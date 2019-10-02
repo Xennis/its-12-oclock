@@ -40,6 +40,7 @@ android {
     defaultConfig {
         applicationId "org.xennis.apps.its_12_oclock"
         minSdkVersion 16
+        multiDexEnabled true
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -60,6 +61,7 @@ flutter {
 }
 
 dependencies {
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.firebase:firebase-analytics:17.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
