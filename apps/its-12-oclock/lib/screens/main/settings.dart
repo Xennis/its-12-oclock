@@ -1,17 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:its_12_oclock/pages/login.dart';
-import 'package:its_12_oclock/sign_in.dart';
+import 'package:its_12_oclock/screens/login/login.dart';
+import 'package:its_12_oclock/services/sign_in.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsWidget extends StatefulWidget {
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  _SettingsWidgetState createState() => _SettingsWidgetState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsWidgetState extends State<SettingsWidget> {
   Position position;
 
   @override
@@ -32,8 +31,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 signOutGoogle();
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) {
-                  return LoginPage();
-                }), ModalRoute.withName('/'));
+                  return LoginScreen();
+                }), ModalRoute.withName('/login'));
               },
               color: Theme.of(context).primaryColor,
               textColor: Colors.white,

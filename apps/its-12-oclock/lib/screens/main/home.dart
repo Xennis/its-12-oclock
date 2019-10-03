@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:its_12_oclock/sign_in.dart';
+import 'package:its_12_oclock/services/sign_in.dart';
 
-class HomePage extends StatefulWidget {
-
+class HomeWidget extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeWidgetState createState() => _HomeWidgetState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeWidgetState extends State<HomeWidget> {
   Position position;
 
   @override

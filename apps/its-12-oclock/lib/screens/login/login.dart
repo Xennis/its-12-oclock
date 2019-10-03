@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:its_12_oclock/sign_in.dart';
+import 'package:its_12_oclock/screens/main/main.dart';
+import 'package:its_12_oclock/services/sign_in.dart';
 import 'package:its_12_oclock/main.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,9 +36,9 @@ class _LoginPageState extends State<LoginPage> {
         signInWithGoogle().whenComplete(() {
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
             builder: (context) {
-              return HomeWidget();
+              return MainScreen();
             },
-          ), ModalRoute.withName('/home'));
+          ), ModalRoute.withName('/main'));
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),

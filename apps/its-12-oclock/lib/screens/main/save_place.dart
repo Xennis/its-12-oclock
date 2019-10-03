@@ -1,18 +1,16 @@
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:its_12_oclock/placefinder.dart';
+import 'package:its_12_oclock/services/placefinder.dart';
 
-class SavePlacePage extends StatefulWidget {
-
+class SavePlaceWidget extends StatefulWidget {
   @override
-  _SavePlacePageState createState() => _SavePlacePageState();
+  _SavePlaceWidgetState createState() => _SavePlaceWidgetState();
 }
 
-class _SavePlacePageState extends State<SavePlacePage> {
+class _SavePlaceWidgetState extends State<SavePlaceWidget> {
   Position position;
 
   @override

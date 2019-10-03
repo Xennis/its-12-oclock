@@ -29,7 +29,6 @@ Future<bool> signInWithGoogle() async {
   return true;
 }
 
-void signOutGoogle() async{
+void signOutGoogle() async {
   await googleSignIn.signOut();
 }
-
