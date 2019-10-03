@@ -1,11 +1,14 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
+import 'package:its_12_oclock/models/location.dart';
+import 'package:its_12_oclock/models/place.dart';
 
 class PlaceFinder {
+  static final String _url =
+      'https://europe-west1-its-12-oclock.cloudfunctions.net/PlaceFinderMock';
+
   static Future<List<Place>> find(Location location, String token) async {
-    final response = await http.post(
-        'https://europe-west1-its-12-oclock.cloudfunctions.net/PlaceFinderMock',
+    final http.Response response = await http.post(_url,
         headers: {'Authorization': "Bearer $token"},
         body: json.encode(location.toJson()));
     if (response.statusCode == 200) {
@@ -17,56 +20,13 @@ class PlaceFinder {
   }
 }
 
-class Place {
-  final int distance;
-  final Location location;
-  final String name;
-  final String placeId;
-  final double rating;
-
-  Place({this.distance, this.location, this.name, this.placeId, this.rating});
-
-  factory Place.fromJson(Map<String, dynamic> json) {
-    return Place(
-      distance: json['distance'],
-      location: Location.fromJson(json['location']),
-      name: json['name'],
-      placeId: json['place_id'],
-      rating: _intToDouble(json['rating']),
-    );
-  }
-
-  static dynamic _intToDouble(dynamic value) {
-    if (value is int) {
-      return value.toDouble();
-    }
-    return value;
-  }
-}
-
-class Location {
-  final double lat;
-  final double lng;
-
-  Location({this.lat, this.lng});
-
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return Location(lat: json['lat'], lng: json['lng']);
-  }
-
-  Map<String, dynamic> toJson() => {
-        'lat': lat,
-        'lng': lng,
-      };
-}
-
 class _PlaceFinderReponse {
   final List<Place> results;
 
   _PlaceFinderReponse({this.results});
 
   factory _PlaceFinderReponse.fromJson(Map<String, dynamic> json) {
-    var results =
+    final List<Place> results =
         (json['results'] as List).map((i) => Place.fromJson(i)).toList();
     return _PlaceFinderReponse(results: results);
   }

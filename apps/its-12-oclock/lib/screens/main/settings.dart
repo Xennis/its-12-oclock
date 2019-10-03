@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:its_12_oclock/screens/login/login.dart';
+import 'package:its_12_oclock/services/history.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
 class SettingsWidget extends StatefulWidget {
@@ -55,7 +56,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       stream: Firestore.instance
           .collection("users")
           .document(fbUser.uid)
-          .collection("history")
+          .collection(History.collection)
+          .orderBy(History.fieldTimestamp, descending: true)
           .snapshots(),
       builder: (_, snapshot) {
         if (!snapshot.hasData) return CircularProgressIndicator();
@@ -63,10 +65,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           itemCount: snapshot.data.documents.length,
           itemBuilder: (_, index) {
             final DocumentSnapshot document = snapshot.data.documents[index];
-            final String place = document['place'];
-            final Timestamp timestamp = document['timestamp'];
+            final String name = document[History.fieldName];
+            final Timestamp timestamp = document[History.fieldTimestamp];
             return ListTile(
-              title: Text(place),
+              title: Text(name),
               subtitle: Text(DateFormat.yMMMd().format(timestamp.toDate())),
             );
           },

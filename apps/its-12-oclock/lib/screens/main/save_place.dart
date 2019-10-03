@@ -3,7 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:its_12_oclock/models/location.dart';
+import 'package:its_12_oclock/models/place.dart';
+import 'package:its_12_oclock/services/history.dart';
 import 'package:its_12_oclock/services/placefinder.dart';
+import 'package:its_12_oclock/services/sign_in.dart';
 
 class SavePlaceWidget extends StatefulWidget {
   @override
@@ -53,6 +57,9 @@ class _SavePlaceWidgetState extends State<SavePlaceWidget> {
                     child: ListTile(
                       leading: FlutterLogo(
                           size: 56.0, colors: Theme.of(context).primaryColor),
+                      onTap: () {
+                        History.save(fbUser, place);
+                      },
                       title: Text(place.name),
                       subtitle: Text(
                           "Distance: ${place.distance}m, Rating: ${place.rating}"),
