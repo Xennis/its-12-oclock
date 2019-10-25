@@ -51,6 +51,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     );
   }
 
+  IconData _event(Event event) {
+    switch(event) {
+      case Event.clicked:
+        return Icons.check_circle;
+      case Event.disliked:
+        return Icons.thumb_down;
+      case Event.launch_maps:
+        return Icons.map;
+      case Event.liked:
+      return Icons.thumb_up;
+    }
+  }
+
   Widget _historyWidget() {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
@@ -67,9 +80,17 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             final DocumentSnapshot document = snapshot.data.documents[index];
             final String name = document[History.fieldName];
             final Timestamp timestamp = document[History.fieldTimestamp];
+            final int eventIndex = document[History.fieldEvent];
+            final Event event = Event.values[eventIndex];
             return ListTile(
               title: Text(name),
-              subtitle: Text(DateFormat.yMMMd().format(timestamp.toDate())),
+              subtitle: Row(
+                children: <Widget>[
+                  Text(DateFormat.yMMMd().format(timestamp.toDate())),
+                  Text("  "),
+                  Icon(_event(event), size: 14.5, color: Colors.grey),
+                ]
+              ),
             );
           },
         );

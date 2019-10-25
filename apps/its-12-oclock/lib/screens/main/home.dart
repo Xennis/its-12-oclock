@@ -90,9 +90,11 @@ class _HomeWidgetState extends State<HomeWidget> {
                       if (direction == DismissDirection.startToEnd) {
                         Scaffold.of(context).showSnackBar(
                             SnackBar(content: Text("Liked ${place.name}")));
+                        History.save(fbUser, place, Event.liked);
                       } else {
                         Scaffold.of(context).showSnackBar(
                             SnackBar(content: Text("Disliked ${place.name}")));
+                        History.save(fbUser, place, Event.disliked);
                       }
                     },
                     child: Column(children: <Widget>[
@@ -103,7 +105,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                               backgroundColor: Theme.of(context).primaryColor,
                             ),
                             onTap: () {
-                              History.save(fbUser, place);
+                              History.save(fbUser, place, Event.clicked);
                             },
                             title: Text(place.name),
                             subtitle: Text(
@@ -111,6 +113,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                             trailing: IconButton(
                               icon: Icon(Icons.map),
                               onPressed: () {
+                                History.save(fbUser, place, Event.launch_maps);
                                 try {
                                   _launchMaps(place);
                                 } on Exception catch(e) {

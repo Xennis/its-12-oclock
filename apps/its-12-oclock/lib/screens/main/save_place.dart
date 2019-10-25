@@ -58,7 +58,7 @@ class _SavePlaceWidgetState extends State<SavePlaceWidget> {
                       leading: FlutterLogo(
                           size: 56.0, colors: Theme.of(context).primaryColor),
                       onTap: () {
-                        History.save(fbUser, place);
+                        History.save(fbUser, place, Event.clicked);
                       },
                       title: Text(place.name),
                       subtitle: Text(
