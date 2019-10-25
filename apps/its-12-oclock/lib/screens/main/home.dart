@@ -9,6 +9,7 @@ import 'package:its_12_oclock/models/place.dart';
 import 'package:its_12_oclock/services/history.dart';
 import 'package:its_12_oclock/services/placefinder.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeWidget extends StatefulWidget {
   @override
@@ -45,6 +46,15 @@ class _HomeWidgetState extends State<HomeWidget> {
       return split[0][0];
     }
     return split[0][0] + split[1][0];
+  }
+
+  _launchMaps(Place place) async {
+    String url = 'geo:${place.location.lat},${place.location.lng}?q=${place.name}';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget _placesWidget() {
@@ -88,17 +98,28 @@ class _HomeWidgetState extends State<HomeWidget> {
                     child: Column(children: <Widget>[
                       Card(
                         child: ListTile(
-                          leading: CircleAvatar(
-                            child: Text(_placeAbbr(place.name)),
-                            backgroundColor: Theme.of(context).primaryColor,
-                          ),
-                          onTap: () {
-                            History.save(fbUser, place);
-                          },
-                          title: Text(place.name),
-                          subtitle: Text(
-                              "Distance: ${place.distance}m, Rating: ${place.rating}"),
-                        ),
+                            leading: CircleAvatar(
+                              child: Text(_placeAbbr(place.name)),
+                              backgroundColor: Theme.of(context).primaryColor,
+                            ),
+                            onTap: () {
+                              History.save(fbUser, place);
+                            },
+                            title: Text(place.name),
+                            subtitle: Text(
+                                "Distance: ${place.distance}m, Rating: ${place.rating}"),
+                            trailing: IconButton(
+                              icon: Icon(Icons.map),
+                              onPressed: () {
+                                try {
+                                  _launchMaps(place);
+                                } on Exception catch(e) {
+                                  Scaffold.of(context).showSnackBar(
+                                    SnackBar(content: Text("Can't launch Maps.")));
+                                }
+                              },
+                              tooltip: "Open on Maps",
+                            )),
                       )
                     ]));
               },
