@@ -41,13 +41,14 @@ class NavigationDrawer extends StatelessWidget {
   }
 
   Widget _createItem({IconData icon, String text, GestureTapCallback onTap}) {
+    Color color = Colors.grey[700];
     return ListTile(
       title: Row(
         children: <Widget>[
-          Icon(icon),
+          Icon(icon, color: color),
           Padding(
             padding: EdgeInsets.only(left: 8.0),
-            child: Text(text),
+            child: Text(text, style: TextStyle(color: color)),
           )
         ],
       ),
