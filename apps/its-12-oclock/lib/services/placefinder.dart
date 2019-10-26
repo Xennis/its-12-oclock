@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:its_12_oclock/models/location.dart';
 import 'package:its_12_oclock/models/place.dart';
+import 'package:its_12_oclock/services/settings.dart';
 
 class PlaceFinderException implements Exception {
   PlaceFinderException([this.message]);
@@ -15,10 +16,11 @@ class PlaceFinderException implements Exception {
 
 class PlaceFinder {
   static final String _url =
-      'https://europe-west1-its-12-oclock.cloudfunctions.net/PlaceFinderMock';
+      'https://europe-west1-its-12-oclock.cloudfunctions.net/PlaceFinder';
 
   static Future<List<Place>> find(Location location, String token) async {
-    final http.Response response = await http.post(_url,
+    String url = usePlaceFinderMock ? _url + 'Mock' : _url;
+    final http.Response response = await http.post(url,
         headers: {'Authorization': "Bearer $token"},
         body: json.encode(location.toJson()));
     if (response.statusCode == 200) {
