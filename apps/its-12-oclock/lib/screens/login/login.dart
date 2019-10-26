@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:its_12_oclock/screens/main/main.dart';
+import 'package:its_12_oclock/screens/main/home.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
         signInWithGoogle().whenComplete(() {
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
             builder: (context) {
-              return MainScreen();
+              return HomeScreen();
             },
           ), ModalRoute.withName('/main'));
         });

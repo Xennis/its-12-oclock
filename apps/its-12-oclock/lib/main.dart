@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:its_12_oclock/routes/routes.dart';
 import 'package:its_12_oclock/screens/history.dart';
 import 'package:its_12_oclock/screens/login/login.dart';
-import 'package:its_12_oclock/screens/main/main.dart';
+import 'package:its_12_oclock/screens/main/home.dart';
 import 'package:its_12_oclock/screens/settings.dart';
 import 'package:its_12_oclock/screens/support.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
@@ -21,7 +21,7 @@ class App extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => _firstScreen(),
-        Routes.main: (context) => MainScreen(),
+        Routes.home: (context) => HomeScreen(),
         Routes.login: (context) => LoginScreen(),
         Routes.history: (context) => HistoryScreen(),
         Routes.settings: (context) => SettingsScreen(),
@@ -36,7 +36,7 @@ class App extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
         if (snapshot.hasData) {
           fbUser = snapshot.data;
-          return MainScreen();
+          return HomeScreen();
         }
         return LoginScreen();
       },

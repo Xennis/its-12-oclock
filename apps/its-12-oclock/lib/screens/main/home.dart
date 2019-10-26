@@ -9,19 +9,25 @@ import 'package:its_12_oclock/models/place.dart';
 import 'package:its_12_oclock/services/history.dart';
 import 'package:its_12_oclock/services/placefinder.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HomeWidget extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
+  static const routeName = 'home';
   @override
-  _HomeWidgetState createState() => _HomeWidgetState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeWidgetState extends State<HomeWidget> {
+class _HomeScreenState extends State<HomeScreen> {
   Position position;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('It\'s 12 o\'clock'),
+      ),
+      drawer: NavigationDrawer(),
       body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
