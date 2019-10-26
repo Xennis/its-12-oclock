@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:its_12_oclock/screens/main/home.dart';
 import 'package:its_12_oclock/screens/main/save_place.dart';
-import 'package:its_12_oclock/screens/main/settings.dart';
 import 'package:its_12_oclock/widgets/navigation_drawer.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,7 +18,6 @@ class _MainScreenState extends State<MainScreen> {
   static List<Widget> _widgetOptions = <Widget>[
     HomeWidget(),
     SavePlaceWidget(),
-    SettingsWidget(),
   ];
 
   void _onItemTapped(int index) {
@@ -47,10 +45,6 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.place),
             title: Text('Save place'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            title: Text('Settings'),
           ),
         ],
         currentIndex: _selectedIndex,

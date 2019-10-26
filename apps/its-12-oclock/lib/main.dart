@@ -4,6 +4,7 @@ import 'package:its_12_oclock/routes/routes.dart';
 import 'package:its_12_oclock/screens/history.dart';
 import 'package:its_12_oclock/screens/login/login.dart';
 import 'package:its_12_oclock/screens/main/main.dart';
+import 'package:its_12_oclock/screens/settings.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
 void main() => runApp(App());
@@ -22,6 +23,7 @@ class App extends StatelessWidget {
         Routes.main: (context) => MainScreen(),
         Routes.login: (context) => LoginScreen(),
         Routes.history: (context) => HistoryScreen(),
+        Routes.settings: (context) => SettingsScreen(),
       },
     );
   }

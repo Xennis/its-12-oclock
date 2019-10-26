@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:its_12_oclock/screens/login/login.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
-class SettingsWidget extends StatefulWidget {
+import 'login/login.dart';
+
+class SettingsScreen extends StatefulWidget {
+  static const String routeName = '/settings';
   @override
-  _SettingsWidgetState createState() => _SettingsWidgetState();
+  _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsWidgetState extends State<SettingsWidget> {
-  Position position;
-
+class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          automaticallyImplyLeading: true,
+          title: Text("Settings"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context, false),
+          )),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
