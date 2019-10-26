@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:its_12_oclock/routes/routes.dart';
+import 'package:its_12_oclock/screens/history.dart';
 import 'package:its_12_oclock/screens/login/login.dart';
 import 'package:its_12_oclock/screens/main/main.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
@@ -14,7 +16,13 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: _firstScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => _firstScreen(),
+        Routes.main: (context) => MainScreen(),
+        Routes.login: (context) => LoginScreen(),
+        Routes.history: (context) => HistoryScreen(),
+      },
     );
   }
 

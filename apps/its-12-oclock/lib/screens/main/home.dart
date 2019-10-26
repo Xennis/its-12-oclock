@@ -116,7 +116,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 History.save(fbUser, place, Event.launch_maps);
                                 try {
                                   _launchMaps(place);
-                                } on Exception catch(e) {
+                                } on Exception catch(_) {
                                   Scaffold.of(context).showSnackBar(
                                     SnackBar(content: Text("Can't launch Maps.")));
                                 }

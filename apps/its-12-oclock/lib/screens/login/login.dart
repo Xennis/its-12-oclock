@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:its_12_oclock/screens/main/main.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
-import 'package:its_12_oclock/main.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const routeName = '/login';
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }

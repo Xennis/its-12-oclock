@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:its_12_oclock/screens/main/home.dart';
 import 'package:its_12_oclock/screens/main/save_place.dart';
 import 'package:its_12_oclock/screens/main/settings.dart';
+import 'package:its_12_oclock/widgets/navigation_drawer.dart';
 
 class MainScreen extends StatefulWidget {
+  static const routeName = '/main';
   MainScreen({Key key}) : super(key: key);
 
   @override
@@ -32,6 +34,7 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: const Text('It\'s 12 o\'clock'),
       ),
+      drawer: NavigationDrawer(),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
