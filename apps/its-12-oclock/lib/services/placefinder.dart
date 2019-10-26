@@ -3,6 +3,16 @@ import 'package:http/http.dart' as http;
 import 'package:its_12_oclock/models/location.dart';
 import 'package:its_12_oclock/models/place.dart';
 
+class PlaceFinderException implements Exception {
+  PlaceFinderException([this.message]);
+
+    /// A human-readable error message, possibly null.
+  final String message;
+
+  @override
+  String toString() => 'PlaceFinderException($message)';
+}
+
 class PlaceFinder {
   static final String _url =
       'https://europe-west1-its-12-oclock.cloudfunctions.net/PlaceFinderMock';
@@ -14,8 +24,7 @@ class PlaceFinder {
     if (response.statusCode == 200) {
       return _PlaceFinderReponse.fromJson(json.decode(response.body)).results;
     } else {
-      // TODO: Handle error
-      throw Exception('Failed to find places');
+      throw PlaceFinderException('Failed to find places: Got ${response.statusCode}');
     }
   }
 }

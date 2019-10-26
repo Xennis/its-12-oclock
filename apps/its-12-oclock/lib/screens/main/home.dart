@@ -29,16 +29,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       drawer: NavigationDrawer(),
       body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: 15),
-            Text(
-              "You could go to ...",
-              style: TextStyle(fontSize: 20),
-            ),
-            _placesWidget(),
-          ],
-        ),
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(height: 15),
+          Text(
+            "You could go to ...",
+            style: TextStyle(fontSize: 20),
+          ),
+          _placesWidget(),
+        ],
+      ),
     );
   }
 
@@ -53,7 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _launchMaps(Place place) async {
-    String url = 'geo:${place.location.lat},${place.location.lng}?q=${place.name}';
+    String url =
+        'geo:${place.location.lat},${place.location.lng}?q=${place.name}';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -62,81 +63,96 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _placesWidget() {
-    return FutureBuilder<List<Place>>(
-        future: _findPlaces(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, int index) {
-                Place place = snapshot.data[index];
-                return Dismissible(
-                    key: Key(index.toString()),
-                    background: Container(
-                      alignment: AlignmentDirectional.centerStart,
-                      color: Colors.green,
-                      child: Padding(
-                          padding: EdgeInsets.fromLTRB(20.0, 0, 0, 0),
-                          child: Icon(Icons.thumb_up, color: Colors.white)),
-                    ),
-                    secondaryBackground: Container(
-                      alignment: AlignmentDirectional.centerEnd,
-                      color: Colors.red,
-                      child: Padding(
-                          padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0),
-                          child: Icon(Icons.thumb_down, color: Colors.white)),
-                    ),
-                    onDismissed: (DismissDirection direction) {
-                      //setState(() {
-                      //  snapshot.data.removeAt(index);
-                      //});
-                      if (direction == DismissDirection.startToEnd) {
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text("Liked ${place.name}")));
-                        History.save(fbUser, place, Event.liked);
-                      } else {
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text("Disliked ${place.name}")));
-                        History.save(fbUser, place, Event.disliked);
-                      }
-                    },
-                    child: Column(children: <Widget>[
-                      Card(
-                        child: ListTile(
-                            leading: CircleAvatar(
-                              child: Text(_placeAbbr(place.name)),
-                              backgroundColor: Theme.of(context).primaryColor,
-                            ),
-                            onTap: () {
-                              History.save(fbUser, place, Event.clicked);
-                            },
-                            title: Text(place.name),
-                            subtitle: Text(
-                                "Distance: ${place.distance}m, Rating: ${place.rating}"),
-                            trailing: IconButton(
-                              icon: Icon(Icons.map),
-                              onPressed: () {
-                                History.save(fbUser, place, Event.launch_maps);
-                                try {
-                                  _launchMaps(place);
-                                } on Exception catch(_) {
-                                  Scaffold.of(context).showSnackBar(
-                                    SnackBar(content: Text("Can't launch Maps.")));
-                                }
-                              },
-                              tooltip: "Open on Maps",
-                            )),
-                      )
-                    ]));
-              },
-            );
-          } else if (snapshot.hasError) {
-            log(snapshot.error);
-            return Text("${snapshot.error}");
-          }
-          return CircularProgressIndicator();
-        });
+    try {
+      return FutureBuilder<List<Place>>(
+          future: _findPlaces(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, int index) {
+                  Place place = snapshot.data[index];
+                  return Dismissible(
+                      key: Key(index.toString()),
+                      background: Container(
+                        alignment: AlignmentDirectional.centerStart,
+                        color: Colors.green,
+                        child: Padding(
+                            padding: EdgeInsets.fromLTRB(20.0, 0, 0, 0),
+                            child: Icon(Icons.thumb_up, color: Colors.white)),
+                      ),
+                      secondaryBackground: Container(
+                        alignment: AlignmentDirectional.centerEnd,
+                        color: Colors.red,
+                        child: Padding(
+                            padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0),
+                            child: Icon(Icons.thumb_down, color: Colors.white)),
+                      ),
+                      onDismissed: (DismissDirection direction) {
+                        //setState(() {
+                        //  snapshot.data.removeAt(index);
+                        //});
+                        if (direction == DismissDirection.startToEnd) {
+                          Scaffold.of(context).showSnackBar(
+                              SnackBar(content: Text("Liked ${place.name}")));
+                          History.save(fbUser, place, Event.liked);
+                        } else {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text("Disliked ${place.name}")));
+                          History.save(fbUser, place, Event.disliked);
+                        }
+                      },
+                      child: Column(children: <Widget>[
+                        Card(
+                          child: _placeItem(place),
+                        )
+                      ]));
+                },
+              );
+            } else if (snapshot.hasError) {
+              log(snapshot.error);
+              return Text("${snapshot.error}");
+            }
+            return CircularProgressIndicator();
+          });
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        print(e);
+        return Text(e.message);
+      } else {
+        print(e);
+        return Text(e.message);
+      }
+    } on PlaceFinderException catch (e) {
+      return Text(e.message);
+    }
+  }
+
+  Widget _placeItem(Place place) {
+    return ListTile(
+        leading: CircleAvatar(
+          child: Text(_placeAbbr(place.name)),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+        onTap: () {
+          History.save(fbUser, place, Event.clicked);
+        },
+        title: Text(place.name),
+        subtitle: Text("Distance: ${place.distance}m, Rating: ${place.rating}"),
+        trailing: IconButton(
+          icon: Icon(Icons.map),
+          onPressed: () {
+            History.save(fbUser, place, Event.launch_maps);
+            try {
+              _launchMaps(place);
+            } on Exception catch (_) {
+              Scaffold.of(context)
+                  .showSnackBar(SnackBar(content: Text("Can't launch Maps.")));
+            }
+          },
+          tooltip: "Open on Maps",
+        ));
   }
 
   Future<List<Place>> _findPlaces() async {
@@ -150,15 +166,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Location(lat: position.latitude, lng: position.longitude),
           tokenResult.token);
     } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-        // TODO: Handle error
-        print(e);
-        throw e;
-      } else {
-        // TODO: Handle error
-        print(e);
-        throw e;
-      }
+      throw e;
+    } on PlaceFinderException catch (e) {
+      throw e;
     }
   }
 }
