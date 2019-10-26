@@ -21,7 +21,10 @@ class NavigationDrawer extends StatelessWidget {
               icon: Icons.settings,
               text: 'Settings',
               onTap: () => Navigator.popAndPushNamed(context, Routes.settings)),
-          _createItem(icon: Icons.help_outline, text: 'Help & feedback'),
+          _createItem(
+              icon: Icons.help_outline,
+              text: 'Help & feedback',
+              onTap: () => Navigator.popAndPushNamed(context, Routes.support)),
         ],
       ),
     );

@@ -22,19 +22,17 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
+      body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             SizedBox(height: 15),
             Text(
-              "Hey ${fbUser.displayName.split(" ")[0]}, I recommend you",
+              "You could go to ...",
               style: TextStyle(fontSize: 20),
             ),
             _placesWidget(),
           ],
         ),
-      ),
     );
   }
 
