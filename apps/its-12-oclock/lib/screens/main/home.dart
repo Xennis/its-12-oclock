@@ -36,9 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
             "You could go to ...",
             style: TextStyle(fontSize: 20),
           ),
-          Expanded(
-            child: _placesWidget(),
-          )
+          _placesWidget(),
         ],
       ),
     );
@@ -83,18 +81,19 @@ class _HomeScreenState extends State<HomeScreen> {
         return _findPlaces(position);
       }(), builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return ListView.builder(
+          return Expanded(
+              child: ListView.builder(
             shrinkWrap: true,
             itemCount: snapshot.data.length,
             itemBuilder: (context, int index) {
               return _placeDismissible(context, snapshot.data[index]);
             },
-          );
+          ));
         } else if (snapshot.hasError) {
           log(snapshot.error);
           return Text("${snapshot.error}");
         }
-        return CircularProgressIndicator();
+        return Center(child: CircularProgressIndicator());
       });
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
