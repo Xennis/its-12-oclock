@@ -36,7 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
             "You could go to ...",
             style: TextStyle(fontSize: 20),
           ),
-          _placesWidget(),
+          Expanded(
+            child: _placesWidget(),
+          )
         ],
       ),
     );
