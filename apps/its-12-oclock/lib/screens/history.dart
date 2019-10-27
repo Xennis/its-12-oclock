@@ -33,9 +33,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
           .document(fbUser.uid)
           .collection(History.collection)
           .orderBy(History.fieldTimestamp, descending: true)
+          .limit(50)
           .snapshots(),
       builder: (_, snapshot) {
-        if (!snapshot.hasData) return CircularProgressIndicator();
+        if (!snapshot.hasData) return Center(
+          child: CircularProgressIndicator()
+        );
         return ListView.builder(
           itemCount: snapshot.data.documents.length,
           itemBuilder: (_, index) {
