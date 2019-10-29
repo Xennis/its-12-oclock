@@ -47,16 +47,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _settingItem(
                 title: "PlaceFinder",
                 subtitle: "Use mock data",
-                action: Switch(
-                  value: usePlaceFinderMock,
-                  onChanged: (bool value) {
-                    usePlaceFinderMock = value;
-                  },
-                )),
+                action: _settingsSwitch(key: SharedPrefs.KEY_SETTINGS_MOCK)),
           ],
         ),
       ),
     );
+  }
+
+  Widget _settingsSwitch({String key}) {
+    return FutureBuilder<bool>(
+        future: SharedPrefs.getBool(key),
+        initialData: false,
+        builder: (context, snapshot) {
+          return Switch(
+            value: snapshot.data,
+            onChanged: (value) {
+              SharedPrefs.setBool(key, value);
+            },
+          );
+        });
   }
 
   Widget _settingItem({String title, String subtitle, Widget action}) {

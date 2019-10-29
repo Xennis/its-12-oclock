@@ -19,7 +19,7 @@ class PlaceFinder {
       'https://europe-west1-its-12-oclock.cloudfunctions.net/PlaceFinder';
 
   static Future<List<Place>> find(Location location, String token) async {
-    String url = usePlaceFinderMock ? _url + 'Mock' : _url;
+    String url = await SharedPrefs.getBool(SharedPrefs.KEY_SETTINGS_MOCK) ? _url + 'Mock' : _url;
     final http.Response response = await http.post(url,
         headers: {'Authorization': "Bearer $token"},
         body: json.encode(location.toJson()));
