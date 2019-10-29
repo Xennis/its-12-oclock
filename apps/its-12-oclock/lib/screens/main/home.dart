@@ -52,49 +52,37 @@ class _HomeScreenState extends State<HomeScreen> {
     return split[0][0] + split[1][0];
   }
 
-  _launchMaps(Place place) async {
+  void _launchMaps(Place place) async {
     String url =
         'geo:${place.location.lat},${place.location.lng}?q=${place.name}';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not launch $url';
+      throw Exception('Could not launch $url');
     }
-  }
-
-  Future<Position> _getPosition() async {
-    bool isLocationEnabled = await Geolocator().isLocationServiceEnabled();
-    if (!isLocationEnabled) {
-      // TODO: Inform the user.
-      //Scaffold.of(context)
-      //    .showSnackBar(SnackBar(content: Text("Location service is off")));
-      return Geolocator().getLastKnownPosition();
-    }
-    return Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
   Widget _placesWidget() {
     try {
-      return FutureBuilder<List<Place>>(future: () async {
-        Position position = await _getPosition();
-        return _findPlaces(position);
-      }(), builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Expanded(
-              child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: snapshot.data.length,
-            itemBuilder: (context, int index) {
-              return _placeDismissible(context, place: snapshot.data[index], user: Auth.fbUser);
-            },
-          ));
-        } else if (snapshot.hasError) {
-          log(snapshot.error.toString());
-          return Text("${snapshot.error.toString()}");
-        }
-        return Center(child: CircularProgressIndicator());
-      });
+      return FutureBuilder<List<Place>>(
+          future: _findPlaces(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Expanded(
+                  child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, int index) {
+                  return _placeDismissible(context,
+                      place: snapshot.data[index], user: Auth.fbUser);
+                },
+              ));
+            } else if (snapshot.hasError) {
+              log(snapshot.error.toString());
+              return Text("${snapshot.error.toString()}");
+            }
+            return Center(child: CircularProgressIndicator());
+          });
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         print(e);
@@ -108,7 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Widget _placeDismissible(BuildContext context, {Place place, FirebaseUser user}) {
+  Widget _placeDismissible(BuildContext context,
+      {Place place, FirebaseUser user}) {
     return Dismissible(
         key: Key(place.placeId),
         background: Container(
@@ -172,7 +161,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
-  Future<List<Place>> _findPlaces(Position position) async {
+  Future<List<Place>> _findPlaces() async {
+    if (!await Geolocator().isLocationServiceEnabled()) {
+      throw PlaceFinderException("Location is disabled");
+    }
+    final Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
     try {
       FirebaseUser user = await FirebaseAuth.instance.currentUser();
       IdTokenResult tokenResult = await user.getIdToken(refresh: true);
