@@ -35,6 +35,6 @@ class App extends StatelessWidget {
     }).catchError((onError) {
       Navigator.pushReplacementNamed(context, Routes.login);
     });
-    return Center(child: CircularProgressIndicator());
+    return Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
