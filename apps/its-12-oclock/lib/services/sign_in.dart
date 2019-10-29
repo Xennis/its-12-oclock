@@ -1,34 +1,51 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
-final GoogleSignIn googleSignIn = GoogleSignIn();
+class Auth {
+  static final GoogleSignIn _googleSignIn = GoogleSignIn();
+  static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  static FirebaseUser fbUser;
 
-FirebaseUser fbUser;
+  static Future<FirebaseUser> _signInWithGoogle(
+      GoogleSignInAccount account) async {
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await account.authentication;
 
-Future<bool> signInWithGoogle() async {
-  final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-  final GoogleSignInAuthentication googleSignInAuthentication =
-      await googleSignInAccount.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+    return (await _firebaseAuth.signInWithCredential(credential)).user;
+  }
 
-  final AuthCredential credential = GoogleAuthProvider.getCredential(
-    accessToken: googleSignInAuthentication.accessToken,
-    idToken: googleSignInAuthentication.idToken,
-  );
+  static Future<FirebaseUser> getSignedInUser() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    assert(user != null);
 
-  fbUser = (await _auth.signInWithCredential(credential)).user;
+    fbUser = user;
+    return user;
+    
+  }
 
-  assert(fbUser.displayName != null);
+  static Future<FirebaseUser> signIn() async {
+    final GoogleSignInAccount googleSignInAccount =
+        await _googleSignIn.signIn();
+    final FirebaseUser user = await _signInWithGoogle(googleSignInAccount);
 
-  assert(!fbUser.isAnonymous);
-  assert(await fbUser.getIdToken() != null);
+    assert(user != null);
+    assert(!user.isAnonymous);
+    assert(user.displayName != null);
+    assert(await user.getIdToken() != null);
 
-  final FirebaseUser currentUser = await _auth.currentUser();
-  assert(fbUser.uid == currentUser.uid);
+    final FirebaseUser currentUser = await _firebaseAuth.currentUser();
+    assert(user.uid == currentUser.uid);
 
-  return true;
-}
+    fbUser = user;
+    return user;
+  }
 
-void signOutGoogle() async {
-  await googleSignIn.signOut();
+  static void signOut() async {
+    await _firebaseAuth.signOut();
+    await _googleSignIn.signOut();
+  }
 }

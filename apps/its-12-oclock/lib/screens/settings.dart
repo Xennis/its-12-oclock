@@ -29,10 +29,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(height: 15),
             _settingItem(
               title: "Account",
-              subtitle: "Logged in as ${fbUser.email}",
+              subtitle: "Logged in as ${Auth.fbUser.email}",
               action: RaisedButton(
                 onPressed: () {
-                  signOutGoogle();
+                  Auth.signOut();
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) {
                     return LoginScreen();

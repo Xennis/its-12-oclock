@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:its_12_oclock/routes/routes.dart';
 import 'package:its_12_oclock/screens/history.dart';
@@ -20,7 +19,7 @@ class App extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => _firstScreen(),
+        '/': (context) => _firstScreen(context),
         Routes.home: (context) => HomeScreen(),
         Routes.login: (context) => LoginScreen(),
         Routes.history: (context) => HistoryScreen(),
@@ -30,16 +29,12 @@ class App extends StatelessWidget {
     );
   }
 
-  Widget _firstScreen() {
-    return FutureBuilder<FirebaseUser>(
-      future: FirebaseAuth.instance.currentUser(),
-      builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
-        if (snapshot.hasData) {
-          fbUser = snapshot.data;
-          return HomeScreen();
-        }
-        return LoginScreen();
-      },
-    );
+  Widget _firstScreen(BuildContext context) {
+    Auth.getSignedInUser().then((user) {
+      Navigator.pushReplacementNamed(context, Routes.home);
+    }).catchError((onError) {
+      Navigator.pushReplacementNamed(context, Routes.login);
+    });
+    return Center(child: CircularProgressIndicator());
   }
 }

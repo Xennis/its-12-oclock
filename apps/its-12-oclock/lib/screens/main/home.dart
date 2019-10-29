@@ -13,7 +13,7 @@ import 'package:its_12_oclock/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const routeName = 'home';
+  static const routeName = '/home';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
             shrinkWrap: true,
             itemCount: snapshot.data.length,
             itemBuilder: (context, int index) {
-              return _placeDismissible(context, snapshot.data[index]);
+              return _placeDismissible(context, place: snapshot.data[index], user: Auth.fbUser);
             },
           ));
         } else if (snapshot.hasError) {
@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Widget _placeDismissible(BuildContext context, Place place) {
+  Widget _placeDismissible(BuildContext context, {Place place, FirebaseUser user}) {
     return Dismissible(
         key: Key(place.placeId),
         background: Container(
@@ -132,35 +132,35 @@ class _HomeScreenState extends State<HomeScreen> {
           if (direction == DismissDirection.startToEnd) {
             Scaffold.of(context)
                 .showSnackBar(SnackBar(content: Text("Liked ${place.name}")));
-            History.save(fbUser, place, Event.liked);
+            History.save(user, place, Event.liked);
           } else {
             Scaffold.of(context).showSnackBar(
                 SnackBar(content: Text("Disliked ${place.name}")));
-            History.save(fbUser, place, Event.disliked);
+            History.save(user, place, Event.disliked);
           }
         },
         child: Column(children: <Widget>[
           Card(
-            child: _placeItem(place),
+            child: _placeItem(place: place, user: user),
           )
         ]));
   }
 
-  Widget _placeItem(Place place) {
+  Widget _placeItem({Place place, FirebaseUser user}) {
     return ListTile(
         leading: CircleAvatar(
           child: Text(_placeAbbr(place.name)),
           backgroundColor: Theme.of(context).primaryColor,
         ),
         onTap: () {
-          History.save(fbUser, place, Event.clicked);
+          History.save(user, place, Event.clicked);
         },
         title: Text(place.name),
         subtitle: Text("Distance: ${place.distance}m, Rating: ${place.rating}"),
         trailing: IconButton(
           icon: Icon(Icons.map),
           onPressed: () {
-            History.save(fbUser, place, Event.launch_maps);
+            History.save(user, place, Event.launch_maps);
             try {
               _launchMaps(place);
             } on Exception catch (_) {

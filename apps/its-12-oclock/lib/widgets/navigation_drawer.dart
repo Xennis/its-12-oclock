@@ -11,7 +11,7 @@ class NavigationDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          _createHeader(fbUser),
+          _createHeader(Auth.fbUser),
           _createItem(
               icon: Icons.history,
               text: 'History',
@@ -32,10 +32,10 @@ class NavigationDrawer extends StatelessWidget {
 
   Widget _createHeader(FirebaseUser user) {
     return UserAccountsDrawerHeader(
-      accountName: Text(fbUser.displayName),
-      accountEmail: Text(fbUser.email),
+      accountName: Text(user.displayName),
+      accountEmail: Text(user.email),
       currentAccountPicture: CircleAvatar(
-        backgroundImage: NetworkImage(fbUser.photoUrl),
+        backgroundImage: NetworkImage(user.photoUrl),
       ),
     );
   }

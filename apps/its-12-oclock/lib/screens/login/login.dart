@@ -1,5 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:its_12_oclock/screens/main/home.dart';
+import 'package:its_12_oclock/routes/routes.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               FlutterLogo(size: 150, colors: Theme.of(context).primaryColor),
               SizedBox(height: 50),
-              _signInButton(),
+              _signInButton(context),
             ],
           ),
         ),
@@ -29,16 +31,15 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _signInButton() {
+  Widget _signInButton(BuildContext context) {
     return OutlineButton(
       splashColor: Colors.grey,
       onPressed: () {
-        signInWithGoogle().whenComplete(() {
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-            builder: (context) {
-              return HomeScreen();
-            },
-          ), ModalRoute.withName('/main'));
+        Auth.signIn().then((user) {
+          Navigator.pushReplacementNamed(context, Routes.home);
+        }).catchError((onError) {
+          // TODO: Show information to the user
+          log("Failed to login");
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
