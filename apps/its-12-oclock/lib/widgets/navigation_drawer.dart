@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -35,7 +36,7 @@ class NavigationDrawer extends StatelessWidget {
       accountName: Text(user.displayName),
       accountEmail: Text(user.email),
       currentAccountPicture: CircleAvatar(
-        backgroundImage: NetworkImage(user.photoUrl),
+        backgroundImage: CachedNetworkImageProvider(user.photoUrl),
       ),
     );
   }
