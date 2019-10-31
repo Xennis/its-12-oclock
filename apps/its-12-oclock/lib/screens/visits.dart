@@ -7,19 +7,19 @@ import 'package:its_12_oclock/models/event.dart';
 import 'package:its_12_oclock/services/history.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
-class HistoryScreen extends StatefulWidget {
-  static const String routeName = '/history';
+class VisitsScreen extends StatefulWidget {
+  static const String routeName = '/visists';
   @override
-  _HistoryScreenState createState() => _HistoryScreenState();
+  _VisitsScreenState createState() => _VisitsScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class _VisitsScreenState extends State<VisitsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: true,
-          title: Text("History"),
+          title: Text("Visits"),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context, false),
@@ -34,8 +34,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
           .collection("users")
           .document(user.uid)
           .collection(History.collectionHistory)
+          .where(History.fieldEvent, isEqualTo: Event.clicked.name)
           .orderBy(History.fieldTimestamp, descending: true)
-          .limit(50)
+          .limit(15)
           .snapshots(),
       builder: (_, snapshot) {
         if (!snapshot.hasData) return Center(
@@ -55,15 +56,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _historyItem(DocumentSnapshot document) {
     final String name = document[History.fieldName];
     final Timestamp timestamp = document[History.fieldTimestamp];
-    final String eventName = document[History.fieldEvent];
-    final Event event = Event.fromName(eventName);
     return ListTile(
       title: Text(name),
-      subtitle: Row(children: <Widget>[
-        Text(DateFormat.yMMMd().format(timestamp.toDate())),
-        Text("  "),
-        Icon(event.iconData, size: 14.5, color: Colors.grey),
-      ]),
+      subtitle: Text(DateFormat.yMMMd().format(timestamp.toDate())),
     );
   }
 }
