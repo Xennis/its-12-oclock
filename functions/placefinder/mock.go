@@ -22,7 +22,7 @@ func PlaceFinderMock(w http.ResponseWriter, r *http.Request) {
 			Distance: 21,
 			Location: maps.LatLng{Lat: 53.5699651, Lng: 9.9437929},
 			Name:     "Frau Max",
-			PlaceID:  "KhIJ181I6GmPsUcRadihR8bA6Qt",
+			PlaceID:  "AcZA311I6GmPsUcRadihR8bA6Bu",
 			Rating:   4.3,
 		},
 	}
