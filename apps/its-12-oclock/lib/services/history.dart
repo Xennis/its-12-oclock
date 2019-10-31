@@ -4,10 +4,13 @@ import 'package:its_12_oclock/models/event.dart';
 import 'package:its_12_oclock/models/place.dart';
 
 class History {
-  static final String collection = "history";
+  static final String collectionHistory = "history";
+  static final String collectionPlaces = "places";
   static final String fieldName = "name";
+  static final String fieldLocation = "location";
   static final String fieldTimestamp = "timestamp";
   static final String fieldEvent = "event";
+  static final String fieldScore = "score";
 
   static Future<DocumentReference> save(
       FirebaseUser user, Place place, Event event) async {
@@ -20,18 +23,18 @@ class History {
     DocumentReference userDoc =
         Firestore.instance.collection("users").document(user.uid);
 
-    userDoc.collection("places").document(placeId).setData({
+    userDoc.collection(collectionPlaces).document(placeId).setData({
       fieldName: placeName,
-      "location": location,
-      "score": FieldValue.increment(event.score),
+      fieldLocation: location,
+      fieldScore: FieldValue.increment(event.score),
       "event_${event.name}": FieldValue.increment(1)
     }, merge: true);
 
-    return userDoc.collection(collection).add({
+    return userDoc.collection(collectionHistory).add({
       fieldName: placeName,
       "place": placeId,
       fieldTimestamp: timestmap,
-      "location": location,
+      fieldLocation: location,
       fieldEvent: event.name,
     });
   }

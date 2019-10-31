@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:its_12_oclock/routes/routes.dart';
-import 'package:its_12_oclock/screens/history.dart';
-import 'package:its_12_oclock/screens/login/login.dart';
-import 'package:its_12_oclock/screens/main/home.dart';
-import 'package:its_12_oclock/screens/settings.dart';
-import 'package:its_12_oclock/screens/support.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
 void main() => runApp(App());
 
 class App extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,14 +14,11 @@ class App extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       initialRoute: '/',
-      routes: {
-        '/': (context) => _firstScreen(context),
-        Routes.home: (context) => HomeScreen(),
-        Routes.login: (context) => LoginScreen(),
-        Routes.history: (context) => HistoryScreen(),
-        Routes.settings: (context) => SettingsScreen(),
-        Routes.support: (context) => SupportScreen(),
-      },
+      routes: () {
+        Map<String, WidgetBuilder> routes = Routes.get(context);
+        routes['/'] = (context) => _firstScreen(context);
+        return routes;
+      }(),
     );
   }
 

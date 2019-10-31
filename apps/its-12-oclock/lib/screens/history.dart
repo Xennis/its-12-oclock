@@ -33,7 +33,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       stream: Firestore.instance
           .collection("users")
           .document(user.uid)
-          .collection(History.collection)
+          .collection(History.collectionHistory)
           .orderBy(History.fieldTimestamp, descending: true)
           .limit(50)
           .snapshots(),
