@@ -120,12 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
           //  snapshot.data.removeAt(index);
           //});
           if (direction == DismissDirection.startToEnd) {
-            Scaffold.of(context)
-                .showSnackBar(SnackBar(content: Text("Liked ${place.name}")));
             History.save(user, place, Event.liked);
           } else {
-            Scaffold.of(context).showSnackBar(
-                SnackBar(content: Text("Disliked ${place.name}")));
             History.save(user, place, Event.disliked);
           }
         },
