@@ -143,19 +143,23 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         title: Text(place.name),
         subtitle: Text("Distance: ${place.distance}m, Rating: ${place.rating}"),
-        trailing: IconButton(
-          icon: Icon(Icons.map),
-          onPressed: () {
-            History.save(user, place, Event.launchMaps);
-            try {
-              _launchMaps(place);
-            } on Exception catch (_) {
-              Scaffold.of(context)
-                  .showSnackBar(SnackBar(content: Text("Can't launch Maps.")));
-            }
-          },
-          tooltip: "Open on Maps",
-        ));
+        trailing: _trailingLaunchMaps(context, place: place, user: user));
+  }
+
+  Widget _trailingLaunchMaps(BuildContext context, {Place place, FirebaseUser user}) {
+    return IconButton(
+      icon: Icon(Icons.map),
+      onPressed: () {
+        History.save(user, place, Event.launchMaps);
+        try {
+          _launchMaps(place);
+        } on Exception catch (_) {
+          Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text("Can't launch Maps.")));
+        }
+      },
+      tooltip: "Open on Maps",
+    );
   }
 
   Future<List<Place>> _findPlaces() async {

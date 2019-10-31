@@ -15,8 +15,8 @@ class NavigationDrawer extends StatelessWidget {
           _createHeader(Auth.fbUser),
           _createItem(
               icon: Icons.place,
-              text: 'Places',
-              onTap: () => Navigator.popAndPushNamed(context, Routes.places)),
+              text: 'Favourites',
+              onTap: () => Navigator.popAndPushNamed(context, Routes.favourites)),
           _createItem(
               icon: Icons.history,
               text: 'History',
