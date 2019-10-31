@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:its_12_oclock/models/event.dart';
 import 'package:its_12_oclock/services/history.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
@@ -54,29 +55,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _historyItem(DocumentSnapshot document) {
     final String name = document[History.fieldName];
     final Timestamp timestamp = document[History.fieldTimestamp];
-    final int eventIndex = document[History.fieldEvent];
-    final Event event = Event.values[eventIndex];
+    final String eventName = document[History.fieldEvent];
+    final Event event = Event.fromName(eventName);
     return ListTile(
       title: Text(name),
       subtitle: Row(children: <Widget>[
         Text(DateFormat.yMMMd().format(timestamp.toDate())),
         Text("  "),
-        Icon(_eventIconData(event), size: 14.5, color: Colors.grey),
+        Icon(event.iconData, size: 14.5, color: Colors.grey),
       ]),
     );
-  }
-
-  IconData _eventIconData(Event event) {
-    switch (event) {
-      case Event.clicked:
-        return Icons.check_circle;
-      case Event.disliked:
-        return Icons.thumb_down;
-      case Event.launch_maps:
-        return Icons.map;
-      case Event.liked:
-      default:
-        return Icons.thumb_up;
-    }
   }
 }
