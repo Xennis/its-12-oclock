@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:its_12_oclock/models/event.dart';
-import 'package:its_12_oclock/models/place.dart';
 
 class History {
   static final String collectionHistory = "history";
@@ -13,12 +13,12 @@ class History {
   static final String fieldScore = "score";
 
   static Future<DocumentReference> save(
-      FirebaseUser user, Place place, Event event) async {
+      FirebaseUser user, PlacesSearchResult place, Event event) async {
     // Explict assign to variables with types to ensure these types.
     String placeName = place.name;
     String placeId = place.placeId;
     Timestamp timestmap = Timestamp.fromDate(DateTime.now());
-    GeoPoint location = GeoPoint(place.location.lat, place.location.lng);
+    GeoPoint location = GeoPoint(place.geometry.location.lat, place.geometry.location.lng);
 
     DocumentReference userDoc =
         Firestore.instance.collection("users").document(user.uid);

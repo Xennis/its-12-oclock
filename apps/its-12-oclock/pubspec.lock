@@ -123,6 +123,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  google_maps_webservice:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: nearby-opennow
+      resolved-ref: e14d4171d0a6d563b7008a034a33e7ac0fb12874
+      url: "https://github.com/Xennis/google_maps_webservice"
+    source: git
+    version: "0.0.15"
   google_sign_in:
     dependency: "direct main"
     description:

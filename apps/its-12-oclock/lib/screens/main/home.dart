@@ -4,11 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:its_12_oclock/models/event.dart';
-import 'package:its_12_oclock/models/location.dart';
-import 'package:its_12_oclock/models/place.dart';
 import 'package:its_12_oclock/services/history.dart';
-import 'package:its_12_oclock/services/placefinder.dart';
+import 'package:its_12_oclock/services/maps/places.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 import 'package:its_12_oclock/widgets/navigation_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -53,9 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return split[0][0] + split[1][0];
   }
 
-  void _launchMaps(Place place) async {
+  void _launchMaps(PlacesSearchResult place) async {
     String url =
-        'geo:${place.location.lat},${place.location.lng}?q=${place.name}';
+        'geo:${place.geometry.location.lat},${place.geometry.location.lng}?q=${place.name}';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -65,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _placesWidget() {
     try {
-      return FutureBuilder<List<Place>>(
+      return FutureBuilder<List<PlacesSearchResult>>(
           future: _findPlaces(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -92,13 +91,13 @@ class _HomeScreenState extends State<HomeScreen> {
         print(e);
         return Text(e.message);
       }
-    } on PlaceFinderException catch (e) {
+    } on PlacesServiceException catch (e) {
       return Text(e.message);
     }
   }
 
   Widget _placeDismissible(BuildContext context,
-      {Place place, FirebaseUser user}) {
+      {PlacesSearchResult place, FirebaseUser user}) {
     return Dismissible(
         key: Key(place.placeId),
         background: Container(
@@ -132,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ]));
   }
 
-  Widget _placeItem({Place place, FirebaseUser user}) {
+  Widget _placeItem({PlacesSearchResult place, FirebaseUser user}) {
     return ListTile(
         leading: CircleAvatar(
           child: Text(_placeAbbr(place.name)),
@@ -142,11 +141,12 @@ class _HomeScreenState extends State<HomeScreen> {
           History.save(user, place, Event.clicked);
         },
         title: Text(place.name),
-        subtitle: Text("Distance: ${place.distance}m, Rating: ${place.rating}"),
+        // TODO: Calculate distance: Distance: ${place.distance}m
+        subtitle: Text("Rating: ${place.rating.toStringAsPrecision(2)}"),
         trailing: _trailingLaunchMaps(context, place: place, user: user));
   }
 
-  Widget _trailingLaunchMaps(BuildContext context, {Place place, FirebaseUser user}) {
+  Widget _trailingLaunchMaps(BuildContext context, {PlacesSearchResult place, FirebaseUser user}) {
     return IconButton(
       icon: Icon(Icons.map),
       onPressed: () {
@@ -162,22 +162,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<List<Place>> _findPlaces() async {
+  Future<List<PlacesSearchResult>> _findPlaces() async {
     if (!await Geolocator().isLocationServiceEnabled()) {
-      throw PlaceFinderException("Location is disabled");
+      throw Exception("Location is disabled");
     }
     final Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     try {
-      FirebaseUser user = await FirebaseAuth.instance.currentUser();
-      IdTokenResult tokenResult = await user.getIdToken(refresh: true);
-      return PlaceFinder.find(
-          Location(lat: position.latitude, lng: position.longitude),
-          tokenResult.token);
+      return PlacesService.searchNearby(
+          Location(position.latitude, position.longitude));
     } on PlatformException catch (e) {
       throw e;
-    } on PlaceFinderException catch (e) {
+    } on PlacesServiceException catch (e) {
       throw e;
     }
   }
