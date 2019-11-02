@@ -17,7 +17,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: true,
-          title: Text("Settings"),
+          title: Text('Settings'),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context, false),
@@ -28,8 +28,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: <Widget>[
             SizedBox(height: 15),
             _settingItem(
-              title: "Account",
-              subtitle: "Logged in as ${Auth.fbUser.email}",
+              title: 'Account',
+              subtitle: 'Logged in as ${Auth.fbUser.email}',
               action: RaisedButton(
                 onPressed: () {
                   Auth.signOut();
@@ -40,13 +40,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
                 color: Theme.of(context).primaryColor,
                 textColor: Colors.white,
-                child: Text("Sign out"),
+                child: Text('Sign out'),
               ),
             ),
             Divider(color: Colors.black),
             _settingItem(
-                title: "PlaceFinder",
-                subtitle: "Use mock data",
+                title: 'PlaceFinder',
+                subtitle: 'Use mock data',
                 action: _settingsSwitch(key: SharedPrefs.KEY_SETTINGS_MOCK)),
           ],
         ),

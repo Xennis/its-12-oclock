@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_webservice/places.dart';
-import 'package:its_12_oclock/screens/main/widget.dart';
-import 'package:its_12_oclock/services/maps/places.dart';
+import 'package:its_12_oclock/services/google_maps/maps_places.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/types/location.dart';
+import 'package:its_12_oclock/types/place.dart';
 import 'package:its_12_oclock/widgets/navigation_drawer.dart';
+
+import 'home_item.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -30,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           SizedBox(height: 15),
           Text(
-            "You could go to ...",
+            'You could go to ...',
             style: TextStyle(fontSize: 20),
           ),
           _placesWidget(),
@@ -41,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _placesWidget() {
     try {
-      return FutureBuilder<List<PlacesSearchResult>>(
+      return FutureBuilder<List<Place>>(
           future: _findPlaces(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -56,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ));
             } else if (snapshot.hasError) {
               log(snapshot.error.toString());
-              return Text("${snapshot.error.toString()}");
+              return Text('${snapshot.error.toString()}');
             }
             return Center(child: CircularProgressIndicator());
           });
@@ -68,19 +70,22 @@ class _HomeScreenState extends State<HomeScreen> {
         print(e);
         return Text(e.message);
       }
-    } on PlacesServiceException catch (e) {
+    } on MapsPlacesException catch (e) {
       return Text(e.message);
     }
   }
 
-  Future<List<PlacesSearchResult>> _findPlaces() async {
+  Future<List<Place>> _findPlaces() async {
     if (!await Geolocator().isLocationServiceEnabled()) {
-      throw Exception("Location is disabled");
+      throw Exception('Location is disabled');
     }
-    final Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator()
+        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.medium);
+    if (position == null) {
+      position = await Geolocator()
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    }
 
-    return PlacesService.searchNearby(
-        Location(position.latitude, position.longitude));
+    return MapsPlaces.searchNearby(Location.fromGeolocator(position));
   }
 }

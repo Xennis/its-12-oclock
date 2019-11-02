@@ -13,16 +13,14 @@ class _SupportScreenState extends State<SupportScreen> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: true,
-          title: Text("Support"),
+          title: Text('Support'),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context, false),
           )),
-      body: Column(
-        children: <Widget>[
-          Text("Press F1!"),
-        ]
-      ),
+      body: Column(children: <Widget>[
+        Text('Press F1!'),
+      ]),
     );
   }
 }

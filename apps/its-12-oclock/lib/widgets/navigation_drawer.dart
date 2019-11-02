@@ -16,7 +16,8 @@ class NavigationDrawer extends StatelessWidget {
           _createItem(
               icon: Icons.favorite,
               text: 'Favourites',
-              onTap: () => Navigator.popAndPushNamed(context, Routes.favourites)),
+              onTap: () =>
+                  Navigator.popAndPushNamed(context, Routes.favourites)),
           _createItem(
               icon: Icons.event,
               text: 'Visits',

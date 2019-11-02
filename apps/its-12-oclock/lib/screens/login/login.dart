@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacementNamed(context, Routes.home);
         }).catchError((onError) {
           // TODO: Show information to the user
-          log("Failed to login");
+          log('Failed to login');
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image(
-                image: AssetImage("assets/images/google_logo.png"),
+                image: AssetImage('assets/images/google_logo.png'),
                 height: 35.0),
             Padding(
               padding: const EdgeInsets.only(left: 10),

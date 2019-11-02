@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:its_12_oclock/screens/favourites.dart';
+import 'package:its_12_oclock/screens/favourites/favourites_screen.dart';
+import 'package:its_12_oclock/screens/main/home_screen.dart';
 import 'package:its_12_oclock/screens/visits.dart';
 import 'package:its_12_oclock/screens/login/login.dart';
-import 'package:its_12_oclock/screens/main/home.dart';
 import 'package:its_12_oclock/screens/settings.dart';
 import 'package:its_12_oclock/screens/support.dart';
 

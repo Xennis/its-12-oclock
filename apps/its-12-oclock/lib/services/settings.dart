@@ -1,7 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefs {
-
   static const KEY_SETTINGS_MOCK = 'settings-mock';
 
   static Future<bool> getBool(String key) async {

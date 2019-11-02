@@ -21,10 +21,8 @@ class Auth {
   static Future<FirebaseUser> getSignedInUser() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     assert(user != null);
-
     fbUser = user;
     return user;
-    
   }
 
   static Future<FirebaseUser> signIn() async {
