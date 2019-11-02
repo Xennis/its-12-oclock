@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:its_12_oclock/services/firebase/firebase_history.dart';
 import 'package:its_12_oclock/services/firebase/firebase_places.dart';
-import 'package:its_12_oclock/services/google_maps/maps_places.dart';
 import 'package:its_12_oclock/types/event.dart';
 import 'package:its_12_oclock/types/place.dart';
+import 'package:its_12_oclock/widgets/place_leading.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PlaceRecommendationDismissible extends StatelessWidget {
@@ -67,7 +66,7 @@ class _PlaceRecommendationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: ListTile(
-            leading: _PlaceRecommendationLeading(place: place),
+            leading: PlaceLeading(place: place),
             onTap: () {
               FirebasePlaces.save(user, place, Event.clicked);
               FirebaseHistory.save(user, place, Event.clicked);
@@ -76,16 +75,6 @@ class _PlaceRecommendationCard extends StatelessWidget {
             // TODO: Calculate distance: Distance: ${place.distance}m
             subtitle: Text('Rating: ${place.rating?.toStringAsPrecision(2)}'),
             trailing: _trailingLaunchMaps(context, place: place, user: user)));
-  }
-
-  String _placeAbbr(String name) {
-    List<String> split = name.split(' ');
-    if (split.length == 0) {
-      return '';
-    } else if (split.length == 1) {
-      return split[0][0];
-    }
-    return split[0][0] + split[1][0];
   }
 
   Widget _trailingLaunchMaps(BuildContext context,
@@ -114,45 +103,5 @@ class _PlaceRecommendationCard extends StatelessWidget {
     } else {
       throw Exception('Could not launch $url');
     }
-  }
-}
-
-class _PlaceRecommendationLeading extends StatelessWidget {
-  const _PlaceRecommendationLeading({Key key, @required this.place})
-      : assert(place != null),
-        super(key: key);
-
-  final Place place;
-
-  Widget build(BuildContext context) {
-    if (place.photo == null) {
-      return CircleAvatar(
-        backgroundColor: Theme.of(context).primaryColor,
-        child: Text(_placeAbbr(place.name)),
-      );
-    }
-
-    final String photoUrl =
-        MapsPlaces.photoUrl(placePhoto: place.photo, maxHeight: 184);
-
-    return GestureDetector(
-      onTap: () {
-        // TODO: Display in the UI
-        place.photo.htmlAttributions?.forEach((a) => print(a));
-      },
-      child: CircleAvatar(
-        backgroundImage: CachedNetworkImageProvider(photoUrl),
-      ),
-    );
-  }
-
-  String _placeAbbr(String name) {
-    List<String> split = name.split(' ');
-    if (split.length == 0) {
-      return '';
-    } else if (split.length == 1) {
-      return split[0][0];
-    }
-    return split[0][0] + split[1][0];
   }
 }
