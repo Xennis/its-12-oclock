@@ -32,9 +32,8 @@ class FirebaseHistoryEntry {
 class FirebaseHistory {
   static final String _name = 'history';
 
-  static Future<bool> save(FirebaseUser user, Place place, Event event) async {
-    // TODO: Add as input for better testing
-    Timestamp timestamp = Timestamp.fromDate(DateTime.now());
+  static Future<bool> save(FirebaseUser user, Place place, Event event, DateTime now) async {
+    Timestamp timestamp = Timestamp.fromDate(now);
     return Firestore.instance
         .collection('users')
         .document(user.uid)

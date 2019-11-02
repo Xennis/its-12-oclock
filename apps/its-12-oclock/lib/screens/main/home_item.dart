@@ -41,10 +41,10 @@ class PlaceRecommendationDismissible extends StatelessWidget {
           //});
           if (direction == DismissDirection.startToEnd) {
             FirebasePlaces.save(user, place, Event.liked);
-            FirebaseHistory.save(user, place, Event.liked);
+            FirebaseHistory.save(user, place, Event.liked, DateTime.now());
           } else {
             FirebasePlaces.save(user, place, Event.disliked);
-            FirebaseHistory.save(user, place, Event.disliked);
+            FirebaseHistory.save(user, place, Event.disliked, DateTime.now());
           }
         },
         child: Column(children: <Widget>[
@@ -69,7 +69,7 @@ class _PlaceRecommendationCard extends StatelessWidget {
             leading: PlaceLeading(place: place),
             onTap: () {
               FirebasePlaces.save(user, place, Event.clicked);
-              FirebaseHistory.save(user, place, Event.clicked);
+              FirebaseHistory.save(user, place, Event.clicked, DateTime.now());
             },
             title: Text(place.name),
             // TODO: Calculate distance: Distance: ${place.distance}m
@@ -82,8 +82,8 @@ class _PlaceRecommendationCard extends StatelessWidget {
     return IconButton(
       icon: Icon(Icons.map),
       onPressed: () {
-        FirebaseHistory.save(user, place, Event.launchMaps);
-        FirebaseHistory.save(user, place, Event.launchMaps);
+        FirebasePlaces.save(user, place, Event.launchMaps);
+        FirebaseHistory.save(user, place, Event.launchMaps, DateTime.now());
         try {
           _launchMaps(place);
         } on Exception catch (_) {
