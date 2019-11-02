@@ -29,7 +29,8 @@ class FirebasePlaces {
 
   static Future<bool> save(FirebaseUser user, Place place, Event event) async {
     Map<String, dynamic> data = FirebasePlacesEntry(place, null).toFirestore();
-    data[FirebasePlacesEntry.fieldScore] = FieldValue.increment(event.score);
+    // TODO: Use FirebasePlacesEntry.fieldScore here lead to 'event' write.
+    data['score'] = FieldValue.increment(event.score);
     data['event_${event.name}'] = FieldValue.increment(1);
     return Firestore.instance
         .collection('users')
