@@ -5,7 +5,7 @@ import 'package:its_12_oclock/services/firebase/firebase_history.dart';
 import 'package:its_12_oclock/services/firebase/firebase_places.dart';
 import 'package:its_12_oclock/types/event.dart';
 import 'package:its_12_oclock/types/place.dart';
-import 'package:its_12_oclock/widgets/place_leading.dart';
+import 'package:its_12_oclock/widgets/place_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PlaceRecommendationDismissible extends StatelessWidget {
@@ -48,51 +48,28 @@ class PlaceRecommendationDismissible extends StatelessWidget {
           }
         },
         child: Column(children: <Widget>[
-          _PlaceRecommendationCard(place: place, user: user),
-        ]));
-  }
-}
-
-class _PlaceRecommendationCard extends StatelessWidget {
-  const _PlaceRecommendationCard(
-      {Key key, @required this.place, @required this.user})
-      : assert(place != null),
-        assert(user != null),
-        super(key: key);
-
-  final Place place;
-  final FirebaseUser user;
-
-  Widget build(BuildContext context) {
-    return Card(
-        child: ListTile(
-            leading: PlaceLeading(place: place),
+          PlaceCard(
             onTap: () {
               FirebasePlaces.save(user, place, Event.clicked);
               FirebaseHistory.save(user, place, Event.clicked, DateTime.now());
             },
-            title: Text(place.name),
-            // TODO: Calculate distance: Distance: ${place.distance}m
+            place: place,
+            trailing: _PlaceRecommendationTrailing(
+              onPressed: () {
+                FirebasePlaces.save(user, place, Event.launchMaps);
+                FirebaseHistory.save(
+                    user, place, Event.launchMaps, DateTime.now());
+                try {
+                  _launchMaps(place);
+                } on Exception catch (_) {
+                  Scaffold.of(context).showSnackBar(
+                      SnackBar(content: Text('Can\'t launch Maps.')));
+                }
+              },
+            ),
             subtitle: Text('Rating: ${place.rating?.toStringAsPrecision(2)}'),
-            trailing: _trailingLaunchMaps(context, place: place, user: user)));
-  }
-
-  Widget _trailingLaunchMaps(BuildContext context,
-      {Place place, FirebaseUser user}) {
-    return IconButton(
-      icon: Icon(Icons.map),
-      onPressed: () {
-        FirebasePlaces.save(user, place, Event.launchMaps);
-        FirebaseHistory.save(user, place, Event.launchMaps, DateTime.now());
-        try {
-          _launchMaps(place);
-        } on Exception catch (_) {
-          Scaffold.of(context)
-              .showSnackBar(SnackBar(content: Text('Can\'t launch Maps.')));
-        }
-      },
-      tooltip: 'Open on Maps',
-    );
+          )
+        ]));
   }
 
   void _launchMaps(Place place) async {
@@ -103,5 +80,20 @@ class _PlaceRecommendationCard extends StatelessWidget {
     } else {
       throw Exception('Could not launch $url');
     }
+  }
+}
+
+class _PlaceRecommendationTrailing extends StatelessWidget {
+  const _PlaceRecommendationTrailing({Key key, this.onPressed})
+      : super(key: key);
+
+  final VoidCallback onPressed;
+
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.map),
+      onPressed: onPressed,
+      tooltip: 'Open on Maps',
+    );
   }
 }

@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:its_12_oclock/services/firebase/firebase_places.dart';
-import 'favourites_item.dart';
+import 'package:its_12_oclock/widgets/place_card.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
 class FavouritesScreen extends StatefulWidget {
@@ -35,7 +34,11 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
             itemBuilder: (_, index) {
               final FirebasePlacesEntry entry = snapshot.data[index];
               return Column(children: <Widget>[
-                FavouritePlaceCard(place: entry.place, score: entry.score)
+                PlaceCard(
+                    place: entry.place,
+                    subtitle: _FavouritesSubtitle(
+                      score: entry.score,
+                    )),
               ]);
             },
           );
@@ -43,5 +46,15 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         return Center(child: CircularProgressIndicator());
       },
     );
+  }
+}
+
+class _FavouritesSubtitle extends StatelessWidget {
+  const _FavouritesSubtitle({Key key, @required this.score}) : super(key: key);
+
+  final num score;
+
+  Widget build(BuildContext context) {
+    return Text('Score: $score');
   }
 }
