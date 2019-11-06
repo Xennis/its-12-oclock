@@ -1,0 +1,32 @@
+os:
+  - linux
+sudo: false
+addons:
+  apt:
+    # Install Flutter dependencies
+    sources:
+      - ubuntu-toolchain-r-test # Ensure to get the right version of libstdc++6
+    packages:
+      - libstdc++6
+      - fonts-noto
+git:
+  depth: 3
+env:
+  - FLUTTER_VERSION=stable
+  - FLUTTER_VERSION=beta
+matrix:
+  allow_failures:
+    - env: FLUTTER_VERSION=beta
+before_script:
+  - git clone https://github.com/flutter/flutter.git -b $FLUTTER_VERSION
+  - export PATH=$PATH:$PWD/flutter/bin/
+  - flutter doctor
+  - cd apps/its-12-oclock && flutter pub get && cd ../../
+script:
+  - make analyze
+cache:
+  directories:
+    - $HOME/shared/.pub-cache
+# Only build the master to avoid 2 build for each pull request
+branches:
+  only: [master]
