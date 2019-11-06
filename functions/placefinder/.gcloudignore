@@ -1,4 +1,0 @@
-.gcloudignore
-Makefile
-README.md
-*_test.go
