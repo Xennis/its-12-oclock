@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:its_12_oclock/services/settings.dart';
+import 'package:its_12_oclock/locales/locales.dart';
+import 'package:its_12_oclock/main.dart';
+import 'package:its_12_oclock/routes/routes.dart';
+import 'package:its_12_oclock/services/shared_prefs.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
-
-import 'login/login.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const String routeName = '/settings';
@@ -12,6 +13,18 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  Locale locale = Locales.en;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPrefs.getLocale().then((storedLocale) {
+      setState(() {
+        locale = storedLocale;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,14 +46,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
               action: RaisedButton(
                 onPressed: () {
                   Auth.signOut();
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) {
-                    return LoginScreen();
-                  }), ModalRoute.withName('/login'));
+                  Navigator.pushReplacementNamed(context, Routes.login);
                 },
                 color: Theme.of(context).primaryColor,
                 textColor: Colors.white,
                 child: Text('Sign out'),
+              ),
+            ),
+            Divider(color: Colors.black),
+            _settingItem(
+              title: 'Language',
+              subtitle: 'App language',
+              action: DropdownButton<Locale>(
+                value: locale,
+                items: () {
+                  List<DropdownMenuItem<Locale>> items = List();
+                  Locales.supported.forEach((locale, lang) => items
+                      .add(DropdownMenuItem(value: locale, child: Text(lang))));
+                  return items;
+                }(),
+                onChanged: (Locale newLocale) {
+                  setState(() {
+                    locale = newLocale;
+                    SharedPrefs.setLocale(newLocale);
+                    App.setLocale(context, newLocale);
+                  });
+                },
               ),
             ),
             Divider(color: Colors.black),

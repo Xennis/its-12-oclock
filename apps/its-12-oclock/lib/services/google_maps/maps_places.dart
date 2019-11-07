@@ -1,5 +1,5 @@
 import 'package:google_maps_webservice/places.dart' as maps;
-import 'package:its_12_oclock/services/settings.dart';
+import 'package:its_12_oclock/services/shared_prefs.dart';
 import 'package:its_12_oclock/types/location.dart';
 import 'package:its_12_oclock/types/place.dart';
 
