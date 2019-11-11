@@ -1,26 +1,18 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:its_12_oclock/services/firebase/firebase_history.dart';
-import 'package:its_12_oclock/services/firebase/firebase_places.dart';
-import 'package:its_12_oclock/types/event.dart';
-import 'package:its_12_oclock/types/place.dart';
-import 'package:its_12_oclock/widgets/place_card.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PlaceRecommendationDismissible extends StatelessWidget {
   const PlaceRecommendationDismissible(
-      {Key key, @required this.place, @required this.user})
-      : assert(place != null),
-        assert(user != null),
+      {@required key, this.child, this.onDismissed})
+      : assert(key != null),
         super(key: key);
 
-  final Place place;
-  final FirebaseUser user;
+  final Widget child;
+  final DismissDirectionCallback onDismissed;
 
   Widget build(BuildContext context) {
     return Dismissible(
-        key: Key(place.id),
+        key: key,
         background: Container(
           alignment: AlignmentDirectional.centerStart,
           color: Theme.of(context).primaryColor,
@@ -35,65 +27,7 @@ class PlaceRecommendationDismissible extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0),
               child: Icon(Icons.thumb_down, color: Colors.white)),
         ),
-        onDismissed: (DismissDirection direction) {
-          //setState(() {
-          //  snapshot.data.removeAt(index);
-          //});
-          if (direction == DismissDirection.startToEnd) {
-            FirebasePlaces.save(user, place, Event.liked);
-            FirebaseHistory.save(user, place, Event.liked, DateTime.now());
-          } else {
-            FirebasePlaces.save(user, place, Event.disliked);
-            FirebaseHistory.save(user, place, Event.disliked, DateTime.now());
-          }
-        },
-        child: Column(children: <Widget>[
-          PlaceCard(
-            onTap: () {
-              FirebasePlaces.save(user, place, Event.clicked);
-              FirebaseHistory.save(user, place, Event.clicked, DateTime.now());
-            },
-            place: place,
-            trailing: _PlaceRecommendationTrailing(
-              onPressed: () {
-                FirebasePlaces.save(user, place, Event.launchMaps);
-                FirebaseHistory.save(
-                    user, place, Event.launchMaps, DateTime.now());
-                try {
-                  _launchMaps(place);
-                } on Exception catch (_) {
-                  Scaffold.of(context).showSnackBar(
-                      SnackBar(content: Text('Can\'t launch Maps.')));
-                }
-              },
-            ),
-            subtitle: Text('Rating: ${place.rating?.toStringAsPrecision(2)}'),
-          )
-        ]));
-  }
-
-  void _launchMaps(Place place) async {
-    String url =
-        'geo:${place.location.lat},${place.location.lng}?q=${place.name}';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw Exception('Could not launch $url');
-    }
-  }
-}
-
-class _PlaceRecommendationTrailing extends StatelessWidget {
-  const _PlaceRecommendationTrailing({Key key, this.onPressed})
-      : super(key: key);
-
-  final VoidCallback onPressed;
-
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.map),
-      onPressed: onPressed,
-      tooltip: 'Open on Maps',
-    );
+        onDismissed: onDismissed,
+        child: child);
   }
 }

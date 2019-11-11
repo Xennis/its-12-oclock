@@ -1,14 +1,20 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:its_12_oclock/services/firebase/firebase_history.dart';
+import 'package:its_12_oclock/services/firebase/firebase_places.dart';
 import 'package:its_12_oclock/services/google_maps/maps_places.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/types/event.dart';
 import 'package:its_12_oclock/types/location.dart';
 import 'package:its_12_oclock/types/place.dart';
 import 'package:its_12_oclock/widgets/navigation_drawer.dart';
+import 'package:its_12_oclock/widgets/place_card.dart';
 import 'package:its_12_oclock/widgets/place_dismissible.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -17,7 +23,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Position position;
+  Future<List<Place>> recommendations;
+
+  @override
+  void initState() {
+    super.initState();
+    recommendations = _findPlaces();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +55,56 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _placesWidget() {
     try {
       return FutureBuilder<List<Place>>(
-          future: _findPlaces(),
+          future: recommendations,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Expanded(
                   child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
-                itemBuilder: (context, int index) {
+                itemBuilder: (context, index) {
+                  final Place place = snapshot.data[index];
+                  final FirebaseUser user = Auth.fbUser;
                   return PlaceRecommendationDismissible(
-                      place: snapshot.data[index], user: Auth.fbUser);
+                    key: Key(place.id),
+                    onDismissed: (DismissDirection direction) {
+                      setState(() {
+                        snapshot.data.removeAt(index);
+                      });
+                      if (direction == DismissDirection.startToEnd) {
+                        FirebasePlaces.save(user, place, Event.liked);
+                        FirebaseHistory.save(
+                            user, place, Event.liked, DateTime.now());
+                      } else {
+                        FirebasePlaces.save(user, place, Event.disliked);
+                        FirebaseHistory.save(
+                            user, place, Event.disliked, DateTime.now());
+                      }
+                    },
+                    child: PlaceCard(
+                      onTap: () {
+                        FirebasePlaces.save(user, place, Event.clicked);
+                        FirebaseHistory.save(
+                            user, place, Event.clicked, DateTime.now());
+                      },
+                      place: place,
+                      trailing: _PlaceRecommendationTrailing(
+                        onPressed: () {
+                          FirebasePlaces.save(user, place, Event.launchMaps);
+                          FirebaseHistory.save(
+                              user, place, Event.launchMaps, DateTime.now());
+                          try {
+                            _launchMaps(place);
+                          } on Exception catch (_) {
+                            Scaffold.of(context).showSnackBar(
+                                SnackBar(content: Text('Can\'t launch Maps.')));
+                          }
+                        },
+                      ),
+                      subtitle: Text(
+                          'Rating: ${place.rating?.toStringAsPrecision(2)}'),
+                    ),
+                  );
                 },
               ));
             } else if (snapshot.hasError) {
@@ -74,6 +126,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _launchMaps(Place place) async {
+    String url =
+        'geo:${place.location.lat},${place.location.lng}?q=${place.name}';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   Future<List<Place>> _findPlaces() async {
     if (!await Geolocator().isLocationServiceEnabled()) {
       throw Exception('Location is disabled');
@@ -86,5 +148,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return MapsPlaces.searchNearby(Location.fromGeolocator(position));
+  }
+}
+
+class _PlaceRecommendationTrailing extends StatelessWidget {
+  const _PlaceRecommendationTrailing({Key key, this.onPressed})
+      : super(key: key);
+
+  final VoidCallback onPressed;
+
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.map),
+      onPressed: onPressed,
+      tooltip: 'Open on Maps',
+    );
   }
 }
