@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,7 +38,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
             final FirebaseHistoryEntry entry = snapshot.data[index];
             return PlaceCard(
                 place: entry.place,
-                subtitle: _VisitsSubtitle(timestamp: entry.timestamp));
+                subtitle: _VisitsSubtitle(date: entry.date));
           },
         );
       },
@@ -48,13 +47,13 @@ class _VisitsScreenState extends State<VisitsScreen> {
 }
 
 class _VisitsSubtitle extends StatelessWidget {
-  const _VisitsSubtitle({Key key, @required this.timestamp})
-      : assert(timestamp != null),
+  const _VisitsSubtitle({Key key, @required this.date})
+      : assert(date != null),
         super(key: key);
 
-  final Timestamp timestamp;
+  final DateTime date;
 
   Widget build(BuildContext context) {
-    return Text(MaterialLocalizations.of(context).formatMediumDate(timestamp.toDate()));
+    return Text(MaterialLocalizations.of(context).formatMediumDate(date));
   }
 }
