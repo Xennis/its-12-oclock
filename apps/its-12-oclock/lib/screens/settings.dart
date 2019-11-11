@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:its_12_oclock/routes/routes.dart';
 import 'package:its_12_oclock/services/settings.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
-import 'login/login.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const String routeName = '/settings';
@@ -33,10 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               action: RaisedButton(
                 onPressed: () {
                   Auth.signOut();
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) {
-                    return LoginScreen();
-                  }), ModalRoute.withName('/login'));
+                  Navigator.pushReplacementNamed(context, Routes.login);
                 },
                 color: Theme.of(context).primaryColor,
                 textColor: Colors.white,
