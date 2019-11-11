@@ -8,8 +8,7 @@ import 'package:its_12_oclock/services/sign_in.dart';
 import 'package:its_12_oclock/types/location.dart';
 import 'package:its_12_oclock/types/place.dart';
 import 'package:its_12_oclock/widgets/navigation_drawer.dart';
-
-import 'home_item.dart';
+import 'package:its_12_oclock/widgets/place_dismissible.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
