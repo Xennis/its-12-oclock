@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:its_12_oclock/services/firebase/firebase_history.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
@@ -55,7 +56,6 @@ class _VisitsSubtitle extends StatelessWidget {
   final Timestamp timestamp;
 
   Widget build(BuildContext context) {
-    return Text(
-        MaterialLocalizations.of(context).formatMediumDate(timestamp.toDate()));
+    return Text(DateFormat.yMMMd().format(timestamp.toDate()));
   }
 }
