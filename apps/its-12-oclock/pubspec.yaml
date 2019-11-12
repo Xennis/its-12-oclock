@@ -34,9 +34,10 @@ dependencies:
     git:
       url: https://github.com/Xennis/google_maps_webservice
       ref: nearby-opennow
-  http: ^0.12.0+2
   geolocator: ^5.1.4+2
+  http: ^0.12.0+2
   intl: ^0.16.0
+  pull_to_refresh: ^1.5.7
   url_launcher: ^5.2.5
   shared_preferences: ^0.5.4+3
 

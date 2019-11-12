@@ -14,6 +14,7 @@ import 'package:its_12_oclock/types/place.dart';
 import 'package:its_12_oclock/widgets/navigation_drawer.dart';
 import 'package:its_12_oclock/widgets/place_card.dart';
 import 'package:its_12_oclock/widgets/place_dismissible.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<List<Place>> recommendations;
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -34,22 +36,30 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('It\'s 12 o\'clock'),
-      ),
-      drawer: NavigationDrawer(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 15),
-          Text(
-            'You could go to ...',
-            style: TextStyle(fontSize: 20),
-          ),
-          _placesWidget(),
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: const Text('It\'s 12 o\'clock'),
+        ),
+        drawer: NavigationDrawer(),
+        body: SmartRefresher(
+            controller: _refreshController,
+            enablePullUp: true,
+            onRefresh: () {
+              setState(() {
+                recommendations = _findPlaces();
+              });
+              _refreshController.refreshCompleted();
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 15),
+                Text(
+                  'You could go to ...',
+                  style: TextStyle(fontSize: 20),
+                ),
+                _placesWidget(),
+              ],
+            )));
   }
 
   Widget _placesWidget() {
