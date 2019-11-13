@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:its_12_oclock/services/firestore/firestore_places.dart';
 import 'package:its_12_oclock/widgets/place_card.dart';
-import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/services/firebase/firebase_auth.dart';
 
 class FavouritesScreen extends StatefulWidget {
   static const String routeName = '/favourites';
@@ -21,7 +21,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
               icon: Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context, false),
             )),
-        body: _placesList(context, Auth.fbUser));
+        body: _placesList(context, AppAuth.fbUser));
   }
 
   Widget _placesList(BuildContext context, FirebaseUser user) {

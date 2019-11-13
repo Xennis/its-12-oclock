@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:its_12_oclock/routes/routes.dart';
-import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/services/firebase/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -35,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return OutlineButton(
       splashColor: Colors.grey,
       onPressed: () {
-        Auth.signIn().then((user) {
+        AppAuth.signIn().then((user) {
           Navigator.pushReplacementNamed(context, Routes.home);
         }).catchError((onError) {
           // TODO: Show information to the user

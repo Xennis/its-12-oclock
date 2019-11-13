@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:its_12_oclock/routes/routes.dart';
-import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/services/firebase/firebase_auth.dart';
 
 void main() => runApp(App());
 
@@ -22,7 +22,7 @@ class App extends StatelessWidget {
   }
 
   Widget _firstScreen(BuildContext context) {
-    Auth.getSignedInUser().then((user) {
+    AppAuth.getSignedInUser().then((user) {
       Navigator.pushReplacementNamed(context, Routes.home);
     }).catchError((onError) {
       Navigator.pushReplacementNamed(context, Routes.login);

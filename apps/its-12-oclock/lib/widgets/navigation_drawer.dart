@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:its_12_oclock/routes/routes.dart';
-import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/services/firebase/firebase_auth.dart';
 
 class NavigationDrawer extends StatelessWidget {
   @override
@@ -12,7 +12,7 @@ class NavigationDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          _createHeader(Auth.fbUser),
+          _createHeader(AppAuth.fbUser),
           _createItem(
               icon: Icons.favorite,
               text: 'Favourites',

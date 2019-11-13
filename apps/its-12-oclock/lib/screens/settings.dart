@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:its_12_oclock/routes/routes.dart';
 import 'package:its_12_oclock/services/shared_prefs.dart';
-import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/services/firebase/firebase_auth.dart';
 
 
 class SettingsScreen extends StatefulWidget {
@@ -29,10 +29,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(height: 15),
             _settingItem(
               title: 'Account',
-              subtitle: 'Logged in as ${Auth.fbUser.email}',
+              subtitle: 'Logged in as ${AppAuth.fbUser.email}',
               action: RaisedButton(
                 onPressed: () {
-                  Auth.signOut();
+                  AppAuth.signOut();
                   Navigator.pushReplacementNamed(context, Routes.login);
                 },
                 color: Theme.of(context).primaryColor,

@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:its_12_oclock/services/firestore/firestore_history.dart';
-import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/services/firebase/firebase_auth.dart';
 import 'package:its_12_oclock/widgets/place_card.dart';
 
 class VisitsScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _VisitsScreenState extends State<VisitsScreen> {
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context, false),
           )),
-      body: _historyList(Auth.fbUser),
+      body: _historyList(AppAuth.fbUser),
     );
   }
 

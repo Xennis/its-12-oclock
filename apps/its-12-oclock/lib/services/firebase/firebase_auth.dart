@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class Auth {
+class AppAuth {
   static final GoogleSignIn _googleSignIn = GoogleSignIn();
   static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   static FirebaseUser fbUser;

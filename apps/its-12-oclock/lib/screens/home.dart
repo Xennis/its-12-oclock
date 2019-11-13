@@ -7,7 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:its_12_oclock/services/firestore/firestore_history.dart';
 import 'package:its_12_oclock/services/firestore/firestore_places.dart';
 import 'package:its_12_oclock/services/google_maps/maps_places.dart';
-import 'package:its_12_oclock/services/sign_in.dart';
+import 'package:its_12_oclock/services/firebase/firebase_auth.dart';
 import 'package:its_12_oclock/types/event.dart';
 import 'package:its_12_oclock/types/location.dart';
 import 'package:its_12_oclock/types/place.dart';
@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
                   final Place place = snapshot.data[index];
-                  final FirebaseUser user = Auth.fbUser;
+                  final FirebaseUser user = AppAuth.fbUser;
                   return PlaceRecommendationDismissible(
                     key: Key(place.id),
                     onDismissed: (DismissDirection direction) {
