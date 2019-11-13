@@ -20,7 +20,7 @@ class PlaceLeading extends StatelessWidget {
     }
 
     final String photoUrl =
-        MapsPlaces.photoUrl(placePhoto: place.photo, maxHeight: 184);
+        MapsPlaces.photoUrl(placePhoto: place.photo, maxHeight: 100);
 
     return GestureDetector(
       onTap: () {
