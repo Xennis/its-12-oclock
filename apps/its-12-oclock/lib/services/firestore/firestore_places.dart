@@ -5,16 +5,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:its_12_oclock/types/event.dart';
 import 'package:its_12_oclock/types/place.dart';
 
-class FirebasePlacesEntry {
-  const FirebasePlacesEntry(this.place, this.score);
+class FirestorePlacesEntry {
+  const FirestorePlacesEntry(this.place, this.score);
 
   static const String fieldPlace = 'place';
   final Place place;
   static const fieldScore = 'score';
   final num score;
 
-  factory FirebasePlacesEntry.fromFirestore(Map<String, dynamic> j) =>
-      FirebasePlacesEntry(
+  factory FirestorePlacesEntry.fromFirestore(Map<String, dynamic> j) =>
+      FirestorePlacesEntry(
         Place.fromFirestore(j[fieldPlace]),
         j[fieldScore],
       );
@@ -24,11 +24,11 @@ class FirebasePlacesEntry {
       };
 }
 
-class FirebasePlaces {
+class FirestorePlaces {
   static final String _name = 'places';
 
   static Future<bool> save(FirebaseUser user, Place place, Event event) async {
-    Map<String, dynamic> data = FirebasePlacesEntry(place, null).toFirestore();
+    Map<String, dynamic> data = FirestorePlacesEntry(place, null).toFirestore();
     // TODO: Use FirebasePlacesEntry.fieldScore here lead to 'event' write.
     data['score'] = FieldValue.increment(event.score);
     data['event_${event.name}'] = FieldValue.increment(1);
@@ -45,17 +45,17 @@ class FirebasePlaces {
     });
   }
 
-  static Stream<List<FirebasePlacesEntry>> streamFavourites(FirebaseUser user) {
+  static Stream<List<FirestorePlacesEntry>> streamFavourites(FirebaseUser user) {
     return Firestore.instance
         .collection('users')
         .document(user.uid)
         .collection(_name)
-        .where(FirebasePlacesEntry.fieldScore, isGreaterThanOrEqualTo: 1)
-        .orderBy(FirebasePlacesEntry.fieldScore, descending: true)
+        .where(FirestorePlacesEntry.fieldScore, isGreaterThanOrEqualTo: 1)
+        .orderBy(FirestorePlacesEntry.fieldScore, descending: true)
         .limit(15)
         .snapshots()
         .map((qs) => qs.documents
-            .map((ds) => FirebasePlacesEntry.fromFirestore(ds.data))
+            .map((ds) => FirestorePlacesEntry.fromFirestore(ds.data))
             .toList());
   }
 }

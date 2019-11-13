@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:its_12_oclock/services/firebase/firebase_history.dart';
-import 'package:its_12_oclock/services/firebase/firebase_places.dart';
+import 'package:its_12_oclock/services/firestore/firestore_history.dart';
+import 'package:its_12_oclock/services/firestore/firestore_places.dart';
 import 'package:its_12_oclock/services/google_maps/maps_places.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 import 'package:its_12_oclock/types/event.dart';
@@ -82,26 +82,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         snapshot.data.removeAt(index);
                       });
                       if (direction == DismissDirection.startToEnd) {
-                        FirebasePlaces.save(user, place, Event.liked);
-                        FirebaseHistory.save(
+                        FirestorePlaces.save(user, place, Event.liked);
+                        FirestoreHistory.save(
                             user, place, Event.liked, DateTime.now());
                       } else {
-                        FirebasePlaces.save(user, place, Event.disliked);
-                        FirebaseHistory.save(
+                        FirestorePlaces.save(user, place, Event.disliked);
+                        FirestoreHistory.save(
                             user, place, Event.disliked, DateTime.now());
                       }
                     },
                     child: PlaceCard(
                       onTap: () {
-                        FirebasePlaces.save(user, place, Event.clicked);
-                        FirebaseHistory.save(
+                        FirestorePlaces.save(user, place, Event.clicked);
+                        FirestoreHistory.save(
                             user, place, Event.clicked, DateTime.now());
                       },
                       place: place,
                       trailing: _PlaceRecommendationTrailing(
                         onPressed: () {
-                          FirebasePlaces.save(user, place, Event.launchMaps);
-                          FirebaseHistory.save(
+                          FirestorePlaces.save(user, place, Event.launchMaps);
+                          FirestoreHistory.save(
                               user, place, Event.launchMaps, DateTime.now());
                           try {
                             _launchMaps(place);

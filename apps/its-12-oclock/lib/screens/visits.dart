@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:its_12_oclock/services/firebase/firebase_history.dart';
+import 'package:its_12_oclock/services/firestore/firestore_history.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 import 'package:its_12_oclock/widgets/place_card.dart';
 
@@ -27,15 +27,15 @@ class _VisitsScreenState extends State<VisitsScreen> {
   }
 
   Widget _historyList(FirebaseUser user) {
-    return StreamBuilder<List<FirebaseHistoryEntry>>(
-      stream: FirebaseHistory.streamClickedRecent(user),
+    return StreamBuilder<List<FirestoreHistoryEntry>>(
+      stream: FirestoreHistory.streamClickedRecent(user),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return Center(child: CircularProgressIndicator());
         return ListView.builder(
           itemCount: snapshot.data.length,
           itemBuilder: (context, index) {
-            final FirebaseHistoryEntry entry = snapshot.data[index];
+            final FirestoreHistoryEntry entry = snapshot.data[index];
             return PlaceCard(
                 place: entry.place,
                 subtitle: _VisitsSubtitle(date: entry.date));

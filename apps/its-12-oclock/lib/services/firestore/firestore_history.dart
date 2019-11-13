@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:its_12_oclock/types/event.dart';
 import 'package:its_12_oclock/types/place.dart';
 
-class FirebaseHistoryEntry {
-  const FirebaseHistoryEntry(this.place, this.date, this.event);
+class FirestoreHistoryEntry {
+  const FirestoreHistoryEntry(this.place, this.date, this.event);
 
   static const String fieldPlace = 'place';
   final Place place;
@@ -15,8 +15,8 @@ class FirebaseHistoryEntry {
   static final String fieldEvent = 'event';
   final Event event;
 
-  factory FirebaseHistoryEntry.fromFirestore(Map<String, dynamic> j) =>
-      FirebaseHistoryEntry(
+  factory FirestoreHistoryEntry.fromFirestore(Map<String, dynamic> j) =>
+      FirestoreHistoryEntry(
         Place.fromFirestore(j[fieldPlace]),
         j[fieldTimestamp].toDate(),
         Event.fromName(j[fieldEvent]),
@@ -29,7 +29,7 @@ class FirebaseHistoryEntry {
       };
 }
 
-class FirebaseHistory {
+class FirestoreHistory {
   static final String _name = 'history';
 
   static Future<bool> save(FirebaseUser user, Place place, Event event, DateTime now) async {
@@ -37,7 +37,7 @@ class FirebaseHistory {
         .collection('users')
         .document(user.uid)
         .collection(_name)
-        .add(FirebaseHistoryEntry(place, now, event).toFirestore())
+        .add(FirestoreHistoryEntry(place, now, event).toFirestore())
         .then((docRef) {
       return true;
     }).catchError((error) {
@@ -45,18 +45,18 @@ class FirebaseHistory {
     });
   }
 
-  static Stream<List<FirebaseHistoryEntry>> streamClickedRecent(
+  static Stream<List<FirestoreHistoryEntry>> streamClickedRecent(
       FirebaseUser user) {
     return Firestore.instance
         .collection('users')
         .document(user.uid)
         .collection(_name)
-        .where(FirebaseHistoryEntry.fieldEvent, isEqualTo: Event.clicked.name)
-        .orderBy(FirebaseHistoryEntry.fieldTimestamp, descending: true)
+        .where(FirestoreHistoryEntry.fieldEvent, isEqualTo: Event.clicked.name)
+        .orderBy(FirestoreHistoryEntry.fieldTimestamp, descending: true)
         .limit(15)
         .snapshots()
         .map((qs) => qs.documents
-            .map((ds) => FirebaseHistoryEntry.fromFirestore(ds.data))
+            .map((ds) => FirestoreHistoryEntry.fromFirestore(ds.data))
             .toList());
   }
 }

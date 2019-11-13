@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:its_12_oclock/services/firebase/firebase_places.dart';
+import 'package:its_12_oclock/services/firestore/firestore_places.dart';
 import 'package:its_12_oclock/widgets/place_card.dart';
 import 'package:its_12_oclock/services/sign_in.dart';
 
@@ -25,14 +25,14 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   }
 
   Widget _placesList(BuildContext context, FirebaseUser user) {
-    return StreamBuilder<List<FirebasePlacesEntry>>(
-      stream: FirebasePlaces.streamFavourites(user),
+    return StreamBuilder<List<FirestorePlacesEntry>>(
+      stream: FirestorePlaces.streamFavourites(user),
       builder: (_, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
             itemCount: snapshot.data.length,
             itemBuilder: (_, index) {
-              final FirebasePlacesEntry entry = snapshot.data[index];
+              final FirestorePlacesEntry entry = snapshot.data[index];
               return Column(children: <Widget>[
                 PlaceCard(
                     place: entry.place,
