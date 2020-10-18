@@ -32,8 +32,8 @@ dependencies:
   # Use fork until https://github.com/lejard-h/google_maps_webservice/pull/59 is merged
   google_maps_webservice:
     git:
-      url: https://github.com/Xennis/google_maps_webservice
-      ref: nearby-opennow
+      url: https://github.com/lejard-h/google_maps_webservice
+      ref: e14d4171d0a6d563b7008a034a33e7ac0fb12874
   geolocator: ^5.1.4+2
   http: ^0.12.0+2
   intl: ^0.16.0

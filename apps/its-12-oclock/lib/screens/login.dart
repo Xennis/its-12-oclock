@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              FlutterLogo(size: 150, colors: Theme.of(context).primaryColor),
+              FlutterLogo(size: 150, textColor: Theme.of(context).primaryColor),
               SizedBox(height: 50),
               _signInButton(context),
             ],
